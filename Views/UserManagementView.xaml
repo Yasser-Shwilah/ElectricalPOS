@@ -1,0 +1,156 @@
+<UserControl x:Class="ElectricalPOS.Views.UserManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:vm="clr-namespace:ElectricalPOS.ViewModels"
+             mc:Ignorable="d"
+             FlowDirection="RightToLeft"
+             FontFamily="{StaticResource ArabicFont}"
+             d:DesignHeight="600" d:DesignWidth="750">
+
+    <UserControl.DataContext>
+        <vm:UserViewModel/>
+    </UserControl.DataContext>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Page Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="إدارة المستخدمين"
+                       Style="{StaticResource ArabicHeaderStyle}"
+                       FontSize="24"/>
+            <TextBlock Text="إضافة وحذف المستخدمين وتحديد الصلاحيات"
+                       Style="{StaticResource ArabicTextStyle}"
+                       Foreground="#757575"/>
+        </StackPanel>
+
+        <!-- Form Section -->
+        <materialDesign:Card Grid.Row="1"
+                             Style="{StaticResource ArabicCardStyle}"
+                             Margin="0,0,0,15">
+            <StackPanel>
+                <TextBlock Text="إضافة مستخدم جديد"
+                           Style="{StaticResource ArabicSubHeaderStyle}"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="180"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Username -->
+                    <TextBox Grid.Column="0"
+                             materialDesign:HintAssist.Hint="اسم المستخدم"
+                             materialDesign:HintAssist.IsFloating="True"
+                             materialDesign:TextFieldAssist.HasLeadingIcon="True"
+                             materialDesign:TextFieldAssist.LeadingIcon="Account"
+                             Style="{StaticResource ArabicTextBoxStyle}"
+                             Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="أدخل اسم المستخدم"
+                             Margin="0,0,5,0"/>
+
+                    <!-- Password -->
+                    <PasswordBox Grid.Column="1"
+                                 materialDesign:HintAssist.Hint="كلمة المرور"
+                                 materialDesign:HintAssist.IsFloating="True"
+                                 materialDesign:TextFieldAssist.HasLeadingIcon="True"
+                                 materialDesign:TextFieldAssist.LeadingIcon="Lock"
+                                 Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                                 FontFamily="{StaticResource ArabicFont}"
+                                 FontSize="14"
+                                 PasswordChanged="PasswordBox_PasswordChanged"
+                                 ToolTip="أدخل كلمة المرور"
+                                 Margin="5,5,5,5"/>
+
+                    <!-- Role -->
+                    <ComboBox Grid.Column="2"
+                              materialDesign:HintAssist.Hint="الصلاحية"
+                              materialDesign:HintAssist.IsFloating="True"
+                              Style="{StaticResource ArabicComboBoxStyle}"
+                              ItemsSource="{Binding Roles}"
+                              SelectedItem="{Binding SelectedRole}"
+                              ToolTip="اختر صلاحية المستخدم"
+                              Margin="5,0,0,0"/>
+                </Grid>
+
+                <!-- Action Buttons -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            Margin="0,15,0,0">
+                    <Button Style="{StaticResource ArabicSuccessButtonStyle}"
+                            Command="{Binding AddUserCommand}"
+                            ToolTip="إضافة مستخدم جديد">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="AccountPlus" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBlock Text="إضافة مستخدم" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Style="{StaticResource ArabicOutlinedButtonStyle}"
+                            Command="{Binding ClearFormCommand}"
+                            ToolTip="مسح النموذج">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Eraser" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBlock Text="مسح" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </materialDesign:Card>
+
+        <!-- Users List -->
+        <materialDesign:Card Grid.Row="2"
+                             Style="{StaticResource ArabicCardStyle}">
+            <DockPanel>
+                <TextBlock Text="قائمة المستخدمين"
+                           Style="{StaticResource ArabicSubHeaderStyle}"
+                           DockPanel.Dock="Top"/>
+
+                <DataGrid DockPanel.Dock="Bottom"
+                          Style="{StaticResource ArabicDataGridStyle}"
+                          ItemsSource="{Binding Users}"
+                          SelectedItem="{Binding SelectedUser}"
+                          ColumnHeaderStyle="{StaticResource ArabicDataGridHeaderStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="الرقم" Binding="{Binding Id}" Width="60">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="اسم المستخدم" Binding="{Binding Username}" Width="*"/>
+                        <DataGridTextColumn Header="الصلاحية" Binding="{Binding Role}" Width="120">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Header="إجراءات" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                            Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            ToolTip="حذف المستخدم"
+                                            Padding="4">
+                                        <materialDesign:PackIcon Kind="Delete" Foreground="#D32F2F"/>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </materialDesign:Card>
+    </Grid>
+</UserControl>
