@@ -20,7 +20,7 @@
             
             <!-- Company Name Constants -->
             <system:String x:Key="CompanyName">مركز الحاج حساني لتجارة الأدوات المنزلية الكهربائية</system:String>
-            <system:String x:Key="CompanySubtitle">إدارة نبيل شويله</system:String>
+            <system:String x:Key="CompanySubtitle">إدارة نبيل الحساني</system:String>
 
             <!-- ==================== Modern 2026 Color Palette ==================== -->
             <!-- Primary Colors - Deep Space Blue with Purple undertones -->

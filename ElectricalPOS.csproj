@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="172.16.17.32" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2792.45" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="QuestPDF" Version="2026.2.3" />
   </ItemGroup>
 
   <ItemGroup>

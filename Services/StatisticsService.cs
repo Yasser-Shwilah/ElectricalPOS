@@ -331,11 +331,11 @@ namespace ElectricalPOS.Services
             using var context = new ElectricalPOSContext();
 
             var inStock = await context.Products
-                .Where(p => p.Quantity >= 10)
+                .Where(p => p.Quantity > 1)
                 .CountAsync();
 
             var lowStock = await context.Products
-                .Where(p => p.Quantity > 0 && p.Quantity < 10)
+                .Where(p => p.Quantity == 1)
                 .CountAsync();
 
             var outOfStock = await context.Products

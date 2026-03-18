@@ -16,8 +16,9 @@ namespace ElectricalPOS.Services
         public async Task<List<CashTransaction>> GetCashTransactionsByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
             using var context = new ElectricalPOSContext();
+            // Use .Date to compare only the date part, ignoring time
             return await context.CashTransactions
-                .Where(ct => ct.Date >= startDate && ct.Date <= endDate)
+                .Where(ct => ct.Date.Date >= startDate.Date && ct.Date.Date <= endDate.Date)
                 .OrderByDescending(ct => ct.Date)
                 .ToListAsync();
         }

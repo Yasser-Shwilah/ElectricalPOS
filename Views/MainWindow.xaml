@@ -121,6 +121,7 @@
                                 Margin="0,2" Height="48"
                                 HorizontalContentAlignment="Right"
                                 ToolTip="إدارة المبيعات والفواتير"
+                                Visibility="{Binding CanShowSales, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 Style="{StaticResource ModernNavButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="المبيعات" Foreground="White" FontFamily="{StaticResource ArabicFont}" FontSize="14" VerticalAlignment="Center"/>
@@ -133,6 +134,7 @@
                                 Margin="0,2" Height="48"
                                 HorizontalContentAlignment="Right"
                                 ToolTip="إدارة المشتريات وفواتير الشراء"
+                                Visibility="{Binding CanShowPurchases, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 Style="{StaticResource ModernNavButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="المشتريات" Foreground="White" FontFamily="{StaticResource ArabicFont}" FontSize="14" VerticalAlignment="Center"/>
@@ -145,6 +147,7 @@
                                 Margin="0,2" Height="48"
                                 HorizontalContentAlignment="Right"
                                 ToolTip="إدارة المنتجات والأصناف"
+                                Visibility="{Binding CanShowProducts, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 Style="{StaticResource ModernNavButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="المنتجات" Foreground="White" FontFamily="{StaticResource ArabicFont}" FontSize="14" VerticalAlignment="Center"/>
@@ -157,10 +160,24 @@
                                 Margin="0,2" Height="48"
                                 HorizontalContentAlignment="Right"
                                 ToolTip="إدارة المخزون وحركات المخزون"
+                                Visibility="{Binding CanShowInventory, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 Style="{StaticResource ModernNavButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="المخزون" Foreground="White" FontFamily="{StaticResource ArabicFont}" FontSize="14" VerticalAlignment="Center"/>
                                 <materialDesign:PackIcon Kind="Warehouse" Foreground="White" Margin="10,0,0,0" FontSize="18" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- الجرد -->
+                        <Button Command="{Binding ShowStockAuditCommand}"
+                                Margin="0,2" Height="48"
+                                HorizontalContentAlignment="Right"
+                                ToolTip="الجرد الشامل للمخزون والصندوق"
+                                Visibility="{Binding CanShowStockAudit, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Style="{StaticResource ModernNavButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="الجرد" Foreground="White" FontFamily="{StaticResource ArabicFont}" FontSize="14" VerticalAlignment="Center"/>
+                                <materialDesign:PackIcon Kind="ClipboardCheck" Foreground="White" Margin="10,0,0,0" FontSize="18" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
 
@@ -195,6 +212,7 @@
                                 Margin="0,2" Height="48"
                                 HorizontalContentAlignment="Right"
                                 ToolTip="إدارة الصندوق والإيرادات"
+                                Visibility="{Binding CanShowCash, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 Style="{StaticResource ModernNavButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="الصندوق" Foreground="White" FontFamily="{StaticResource ArabicFont}" FontSize="14" VerticalAlignment="Center"/>
@@ -207,6 +225,7 @@
                                 Margin="0,2" Height="48"
                                 HorizontalContentAlignment="Right"
                                 ToolTip="استعراض الفواتير"
+                                Visibility="{Binding CanShowInvoices, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 Style="{StaticResource ModernNavButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="الفواتير" Foreground="White" FontFamily="{StaticResource ArabicFont}" FontSize="14" VerticalAlignment="Center"/>
@@ -219,6 +238,7 @@
                                 Margin="0,2" Height="48"
                                 HorizontalContentAlignment="Right"
                                 ToolTip="لوحة الإحصائيات والمراقبة"
+                                Visibility="{Binding CanShowStatistics, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 Style="{StaticResource ModernNavButtonStyle}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="الإحصائيات" Foreground="White" FontFamily="{StaticResource ArabicFont}" FontSize="14" VerticalAlignment="Center"/>

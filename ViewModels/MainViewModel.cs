@@ -21,19 +21,20 @@ namespace ElectricalPOS.ViewModels
 
         // Visibility properties for different roles
         // Admin: Full access
-        // Accountant: Sales, Purchases, Inventory, Cash only
+        // Accountant: Sales only
         public bool CanShowSuppliers => IsAdmin;
         public bool CanShowCustomers => IsAdmin;
         public bool CanShowCategories => IsAdmin;
         public bool CanShowUsers => IsAdmin;
-        public bool CanShowProducts => IsAdmin || IsAccountant;
+        public bool CanShowProducts => IsAdmin;
         public bool CanShowSales => IsAdmin || IsAccountant;
-        public bool CanShowPurchases => IsAdmin || IsAccountant;
-        public bool CanShowInventory => IsAdmin || IsAccountant;
-        public bool CanShowCash => IsAdmin || IsAccountant;
-        public bool CanShowInvoices => IsAdmin || IsAccountant;
-        public bool CanShowStatistics => IsAdmin || IsAccountant;
+        public bool CanShowPurchases => IsAdmin;
+        public bool CanShowInventory => IsAdmin;
+        public bool CanShowCash => IsAdmin;
+        public bool CanShowInvoices => IsAdmin;
+        public bool CanShowStatistics => IsAdmin;
         public bool CanShowBackup => IsAdmin;
+        public bool CanShowStockAudit => IsAdmin;
 
         public MainViewModel(User user)
         {
@@ -132,6 +133,13 @@ namespace ElectricalPOS.ViewModels
         {
             if (!CanShowBackup) return;
             CurrentView = new Views.BackupManagementView();
+        }
+
+        [RelayCommand]
+        private void ShowStockAudit()
+        {
+            if (!CanShowStockAudit) return;
+            CurrentView = new Views.StockAuditView();
         }
 
 

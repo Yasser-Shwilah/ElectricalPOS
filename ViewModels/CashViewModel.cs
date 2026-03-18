@@ -109,7 +109,7 @@ namespace ElectricalPOS.ViewModels
 
             var transaction = new CashTransaction
             {
-                Date = TransactionDate,
+                Date = DateTime.Now, // Use current date and time
                 Type = TransactionType,
                 Amount = Amount,
                 Description = Description
