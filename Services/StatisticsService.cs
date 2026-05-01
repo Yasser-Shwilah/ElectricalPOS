@@ -154,10 +154,10 @@ namespace ElectricalPOS.Services
             {
                 var monthDate = today.AddMonths(-i);
                 var startOfMonth = new DateTime(monthDate.Year, monthDate.Month, 1);
-                var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+                var startOfNextMonth = startOfMonth.AddMonths(1);
 
                 var monthSales = await context.Sales
-                    .Where(s => s.Date >= startOfMonth && s.Date <= endOfMonth)
+                    .Where(s => s.Date >= startOfMonth && s.Date < startOfNextMonth)
                     .ToListAsync();
 
                 result.Add(new MonthlySalesData
@@ -411,9 +411,10 @@ namespace ElectricalPOS.Services
         private async Task<decimal> GetMonthlyExpensesFromCashTransactionsAsync(DateTime startOfMonth)
         {
             using var context = new ElectricalPOSContext();
-            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+            var startOfNextMonth = startOfMonth.AddMonths(1);
+            // Use half-open interval [startOfMonth, startOfNextMonth) to include all times on the last day
             return await context.CashTransactions
-                .Where(ct => ct.Type == "مصروف" && ct.Date >= startOfMonth && ct.Date <= endOfMonth)
+                .Where(ct => ct.Type == "مصروف" && ct.Date >= startOfMonth && ct.Date < startOfNextMonth)
                 .SumAsync(ct => ct.Amount);
         }
     }

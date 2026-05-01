@@ -1,9 +1,16 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ElectricalPOS.Models;
 using ElectricalPOS.Services;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace ElectricalPOS.ViewModels
 {
@@ -16,6 +23,15 @@ namespace ElectricalPOS.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<Product> products = new();
+
+        // Filtered view used for autocomplete suggestions
+        public ICollectionView FilteredProducts { get; private set; }
+
+        [ObservableProperty]
+        private string productSearchText = string.Empty;
+
+        [ObservableProperty]
+        private bool isProductDropDownOpen;
 
         [ObservableProperty]
         private ObservableCollection<CartItem> cartItems = new();
@@ -56,6 +72,15 @@ namespace ElectricalPOS.ViewModels
         public SalesViewModel(User currentUser)
         {
             _currentUser = currentUser;
+            // Initialize filtered view for Products collection
+            FilteredProducts = CollectionViewSource.GetDefaultView(Products);
+            FilteredProducts.Filter = obj =>
+            {
+                if (obj is not Product p) return false;
+                if (string.IsNullOrWhiteSpace(ProductSearchText)) return true;
+                return p.Name?.StartsWith(ProductSearchText, System.StringComparison.CurrentCultureIgnoreCase) == true;
+            };
+
             LoadDataAsync();
         }
 
@@ -82,6 +107,56 @@ namespace ElectricalPOS.ViewModels
             {
                 Products.Add(product);
             }
+            // Refresh filtered view after loading products
+            FilteredProducts.Refresh();
+        }
+
+        partial void OnProductSearchTextChanged(string value)
+        {
+            // If the user is typing, clear any existing selected product so the
+            // ComboBox doesn't replace the typed text with the selected item's
+            // display value.
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                if (SelectedProduct != null && !string.Equals(SelectedProduct.Name, value, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    SelectedProduct = null;
+                }
+            }
+
+            // Refresh filtering asynchronously on the UI dispatcher to avoid
+            // interfering with the ComboBox edit buffer (which can cause the
+            // first typed character to be removed).
+            var dispatcher = Application.Current?.Dispatcher;
+            if (dispatcher != null)
+            {
+                dispatcher.BeginInvoke(new Action(() =>
+                {
+                    FilteredProducts?.Refresh();
+
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        IsProductDropDownOpen = FilteredProducts != null && FilteredProducts.Cast<object>().Any();
+                    }
+                    else
+                    {
+                        IsProductDropDownOpen = false;
+                    }
+                }), DispatcherPriority.Background);
+            }
+            else
+            {
+                FilteredProducts?.Refresh();
+                IsProductDropDownOpen = !string.IsNullOrWhiteSpace(value) && FilteredProducts != null && FilteredProducts.Cast<object>().Any();
+            }
+        }
+
+        partial void OnSelectedProductChanged(Product? value)
+        {
+            // When a product is selected from the list, reflect it in the search text
+            ProductSearchText = value?.Name ?? string.Empty;
+            // Close the dropdown after selection
+            IsProductDropDownOpen = false;
         }
 
         [RelayCommand]
@@ -213,6 +288,12 @@ namespace ElectricalPOS.ViewModels
                     ClearCart();
                     await LoadProductsAsync();
                     await LoadSalesAsync();
+                    // Notify statistics viewmodels to refresh their data
+                    try
+                    {
+                        WeakReferenceMessenger.Default.Send(new ReloadStatisticsMessage());
+                    }
+                    catch { }
                 }
                 else
                 {

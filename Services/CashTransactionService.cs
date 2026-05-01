@@ -119,9 +119,10 @@ namespace ElectricalPOS.Services
         {
             using var context = new ElectricalPOSContext();
             var startOfMonth = new DateTime(date.Year, date.Month, 1);
-            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+            var startOfNextMonth = startOfMonth.AddMonths(1);
+            // Use half-open interval [startOfMonth, startOfNextMonth) to include all times
             var transactions = await context.CashTransactions
-                .Where(ct => ct.Date >= startOfMonth && ct.Date <= endOfMonth && ct.Type == "مصروف")
+                .Where(ct => ct.Date >= startOfMonth && ct.Date < startOfNextMonth && ct.Type == "مصروف")
                 .ToListAsync();
 
             return transactions.Sum(t => t.Amount);

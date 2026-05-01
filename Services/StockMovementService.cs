@@ -89,8 +89,12 @@ namespace ElectricalPOS.Services
             var products = await context.Products
                 .Where(p => p.Quantity <= threshold)
                 .ToListAsync();
-            
-            return products.ToDictionary(p => p.Name, p => p.Quantity);
+            // Group by product name to avoid duplicate dictionary keys when multiple
+            // product records share the same name. Sum quantities for the grouped
+            // items so the returned dictionary contains the total quantity per name.
+            return products
+                .GroupBy(p => p.Name)
+                .ToDictionary(g => g.Key, g => g.Sum(p => p.Quantity));
         }
 
         public async Task<bool> PerformStockAdjustmentAsync(int productId, int adjustment, string reason)

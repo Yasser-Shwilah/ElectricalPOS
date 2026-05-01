@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ElectricalPOS.Models;
 using ElectricalPOS.Services;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
 using System.Windows;
 
@@ -122,6 +123,8 @@ namespace ElectricalPOS.ViewModels
                 ClearForm();
                 await LoadTransactionsAsync();
                 await LoadSummaryAsync();
+                // Notify statistics view to reload (e.g., month expense indicator)
+                WeakReferenceMessenger.Default.Send(new ReloadStatisticsMessage());
             }
             else
             {
@@ -149,6 +152,8 @@ namespace ElectricalPOS.ViewModels
                     MessageBox.Show("Transaction deleted successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     await LoadTransactionsAsync();
                     await LoadSummaryAsync();
+                    // Notify statistics view to reload after deletion
+                    WeakReferenceMessenger.Default.Send(new ReloadStatisticsMessage());
                 }
                 else
                 {

@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ElectricalPOS.Services;
 using Newtonsoft.Json;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Windows;
 
 namespace ElectricalPOS.ViewModels
@@ -50,6 +51,12 @@ namespace ElectricalPOS.ViewModels
         public StatisticsViewModel()
         {
             LoadDataAsync();
+            // Register for reload messages
+            WeakReferenceMessenger.Default.Register<ReloadStatisticsMessage>(this, (r, m) =>
+            {
+                // Reload asynchronously
+                _ = LoadDataAsync();
+            });
         }
 
         [RelayCommand]

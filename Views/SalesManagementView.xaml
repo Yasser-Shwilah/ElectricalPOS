@@ -9,6 +9,7 @@
              FontFamily="{StaticResource ArabicFont}"
              d:DesignHeight="750" d:DesignWidth="1100">
 
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -54,9 +55,14 @@
                                       materialDesign:HintAssist.Hint="اختر المنتج"
                                       materialDesign:HintAssist.IsFloating="True"
                                       Style="{StaticResource ArabicComboBoxStyle}"
-                                      ItemsSource="{Binding Products}"
-                                      SelectedItem="{Binding SelectedProduct}"
+                                      ItemsSource="{Binding FilteredProducts}"
+                                      SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
                                       DisplayMemberPath="Name"
+                                      IsEditable="True"
+                                      IsTextSearchEnabled="False"
+                                      StaysOpenOnEdit="True"
+                                      Text="{Binding ProductSearchText, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                      IsDropDownOpen="{Binding IsProductDropDownOpen, Mode=TwoWay}"
                                       ToolTip="اختر المنتج المراد بيعه"
                                       Margin="0,0,5,0"/>
 
@@ -133,8 +139,7 @@
                                       CanUserDeleteRows="False"
                                       CanUserReorderColumns="False"
                                       SelectionMode="Single"
-                                      ColumnWidth="Auto"
-                                      MinWidth="760">
+                                      ColumnWidth="Auto">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="م"
                                                     Binding="{Binding ProductId}"
@@ -358,4 +363,5 @@
             </StackPanel>
         </Grid>
     </Grid>
+    </ScrollViewer>
 </UserControl>

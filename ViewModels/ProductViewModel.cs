@@ -4,6 +4,11 @@ using ElectricalPOS.Models;
 using ElectricalPOS.Services;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.ComponentModel;
+using System.Windows.Data;
+using System.Linq;
+using System;
+using System.Diagnostics;
 
 namespace ElectricalPOS.ViewModels
 {
@@ -20,6 +25,16 @@ namespace ElectricalPOS.ViewModels
 
         [ObservableProperty]
         private Product? selectedProduct;
+
+        [ObservableProperty]
+        private int productsCount;
+
+        // Search text for filtering products
+        [ObservableProperty]
+        private string productSearchText = string.Empty;
+
+        // Filtered view for Products collection
+        public ICollectionView FilteredProducts { get; private set; }
 
         [ObservableProperty]
         private string name = string.Empty;
@@ -44,6 +59,15 @@ namespace ElectricalPOS.ViewModels
 
         public ProductViewModel()
         {
+            // Initialize filtered view for Products
+            FilteredProducts = CollectionViewSource.GetDefaultView(Products);
+            FilteredProducts.Filter = obj =>
+            {
+                if (obj is not Product p) return false;
+                if (string.IsNullOrWhiteSpace(ProductSearchText)) return true;
+                return p.Name?.IndexOf(ProductSearchText, StringComparison.CurrentCultureIgnoreCase) >= 0;
+            };
+
             LoadDataAsync();
         }
 
@@ -62,6 +86,21 @@ namespace ElectricalPOS.ViewModels
             {
                 Products.Add(product);
             }
+            // Refresh filtered view after loading
+            FilteredProducts?.Refresh();
+        }
+
+        partial void OnProductSearchTextChanged(string value)
+        {
+            // Refresh the filtered view whenever the search text changes
+            FilteredProducts?.Refresh();
+        }
+
+        [RelayCommand]
+        private void ClearSearch()
+        {
+            ProductSearchText = string.Empty;
+            FilteredProducts?.Refresh();
         }
 
         [RelayCommand]

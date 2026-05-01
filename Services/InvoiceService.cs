@@ -1,6 +1,7 @@
 using ElectricalPOS.Models;
 using ElectricalPOS.Services;
 using ElectricalPOS.Utilities;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -342,6 +343,13 @@ namespace ElectricalPOS.Services
                         .FirstOrDefaultAsync(s => s.Id == sale.Id);
 
                     DatabaseLogger.LogInfo($"Sale created successfully: {sale.InvoiceNumber}");
+
+                    // Notify any listeners (e.g. statistics viewmodels) to refresh
+                    try
+                    {
+                        WeakReferenceMessenger.Default.Send(new ViewModels.ReloadStatisticsMessage());
+                    }
+                    catch { }
 
                     return (true, "تم حفظ الفاتورة بنجاح", savedSale);
                 }

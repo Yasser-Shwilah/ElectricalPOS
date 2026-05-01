@@ -167,15 +167,30 @@
         <materialDesign:Card Grid.Row="2"
                              Style="{StaticResource ArabicCardStyle}">
             <DockPanel>
-                <TextBlock Text="قائمة المنتجات"
-                           Style="{StaticResource ArabicSubHeaderStyle}"
-                           DockPanel.Dock="Top"/>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,0,0,10">
+                    <TextBlock Text="قائمة المنتجات"
+                               Style="{StaticResource ArabicSubHeaderStyle}" VerticalAlignment="Center"/>
+                    <TextBlock Text="(" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                    <TextBlock Text="{Binding ProductsCount}" VerticalAlignment="Center"/>
+                    <TextBlock Text=")" VerticalAlignment="Center"/>
+
+                    <TextBox Width="250" Margin="20,0,0,0"
+                             materialDesign:HintAssist.Hint="ابحث عن منتج"
+                             Style="{StaticResource ArabicTextBoxStyle}"
+                             Text="{Binding ProductSearchText, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="أدخل نص للبحث"/>
+
+                    <Button Content="مسح" Margin="8,0,0,0" Command="{Binding ClearSearchCommand}"
+                            Style="{StaticResource ArabicOutlinedButtonStyle}"/>
+                </StackPanel>
 
                 <DataGrid DockPanel.Dock="Bottom"
                           Style="{StaticResource ArabicDataGridStyle}"
                           ItemsSource="{Binding Products}"
                           SelectedItem="{Binding SelectedProduct}"
-                          ColumnHeaderStyle="{StaticResource ArabicDataGridHeaderStyle}">
+                          ColumnHeaderStyle="{StaticResource ArabicDataGridHeaderStyle}"
+                          CanUserResizeColumns="True"
+                          CanUserReorderColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="الرقم" Binding="{Binding Id}" Width="60">
                             <DataGridTextColumn.ElementStyle>
@@ -184,10 +199,10 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="اسم المنتج" Binding="{Binding Name}" Width="*"/>
-                        <DataGridTextColumn Header="الموديل" Binding="{Binding ModelNumber}" Width="100"/>
-                        <DataGridTextColumn Header="التصنيف" Binding="{Binding Category.Name}" Width="120"/>
-                        <DataGridTextColumn Header="سعر الشراء" Binding="{Binding PurchasePrice, StringFormat=N2}" Width="110">
+                        <DataGridTextColumn Header="اسم المنتج" Binding="{Binding Name}" Width="2*"/>
+                        <DataGridTextColumn Header="الموديل" Binding="{Binding ModelNumber}" Width="*"/>
+                        <DataGridTextColumn Header="التصنيف" Binding="{Binding Category.Name}" Width="*"/>
+                        <DataGridTextColumn Header="سعر الشراء" Binding="{Binding PurchasePrice, StringFormat=N2}" Width="*">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -231,7 +246,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
-                </DataGrid>
+                    </DataGrid>
             </DockPanel>
         </materialDesign:Card>
     </Grid>
