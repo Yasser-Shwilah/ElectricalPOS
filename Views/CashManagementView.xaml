@@ -74,10 +74,17 @@
                 </StackPanel>
             </materialDesign:Card>
 
+<<<<<<< HEAD
             <!-- Yearly income (current calendar year) -->
             <materialDesign:Card Grid.Column="2" Style="{StaticResource ArabicCardStyle}" Margin="5,0">
                 <StackPanel HorizontalAlignment="Center">
                     <materialDesign:PackIcon Kind="DateRange" Width="28" Height="28"
+=======
+            <!-- Total Income -->
+            <materialDesign:Card Grid.Column="2" Style="{StaticResource ArabicCardStyle}" Margin="5,0">
+                <StackPanel HorizontalAlignment="Center">
+                    <materialDesign:PackIcon Kind="TrendingUp" Width="28" Height="28"
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                                              HorizontalAlignment="Center"
                                              Foreground="#4CAF50"/>
                     <TextBlock Text="{Binding TotalIncome, StringFormat=N2}"
@@ -85,15 +92,26 @@
                                Foreground="#4CAF50"
                                FlowDirection="LeftToRight"
                                FontSize="20"/>
+<<<<<<< HEAD
                     <TextBlock Text="إيرادات السنة الحالية"
+=======
+                    <TextBlock Text="إجمالي الإيرادات"
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                                Style="{StaticResource SummaryLabelStyle}"/>
                 </StackPanel>
             </materialDesign:Card>
 
+<<<<<<< HEAD
             <!-- Yearly expense (current calendar year) -->
             <materialDesign:Card Grid.Column="3" Style="{StaticResource ArabicCardStyle}" Margin="5,0">
                 <StackPanel HorizontalAlignment="Center">
                     <materialDesign:PackIcon Kind="DateRange" Width="28" Height="28"
+=======
+            <!-- Total Expense -->
+            <materialDesign:Card Grid.Column="3" Style="{StaticResource ArabicCardStyle}" Margin="5,0">
+                <StackPanel HorizontalAlignment="Center">
+                    <materialDesign:PackIcon Kind="TrendingDown" Width="28" Height="28"
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                                              HorizontalAlignment="Center"
                                              Foreground="#D32F2F"/>
                     <TextBlock Text="{Binding TotalExpense, StringFormat=N2}"
@@ -101,7 +119,11 @@
                                Foreground="#D32F2F"
                                FlowDirection="LeftToRight"
                                FontSize="20"/>
+<<<<<<< HEAD
                     <TextBlock Text="مصروفات السنة الحالية"
+=======
+                    <TextBlock Text="إجمالي المصروفات"
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                                Style="{StaticResource SummaryLabelStyle}"/>
                 </StackPanel>
             </materialDesign:Card>

@@ -452,6 +452,7 @@ namespace ElectricalPOS.Services
         }
 
         /// <summary>
+<<<<<<< HEAD
         /// Fully reverses a POS sale (<see cref="Sale"/>): restores inventory, records stock movements,
         /// removes the matching cash-register income entry, and deletes the sale record so statistics
         /// (sales, profit, cash balance, inventory value) stay consistent.
@@ -572,6 +573,8 @@ namespace ElectricalPOS.Services
         }
 
         /// <summary>
+=======
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         /// Deletes an invoice and restores stock
         /// </summary>
         public async Task<(bool Success, string Message)> DeleteInvoiceAsync(int invoiceId)

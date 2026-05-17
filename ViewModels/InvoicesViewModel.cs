@@ -34,11 +34,14 @@ namespace ElectricalPOS.ViewModels
         [ObservableProperty]
         private Sale? selectedInvoice;
 
+<<<<<<< HEAD
         partial void OnSelectedInvoiceChanged(Sale? value)
         {
             ReverseSaleCommand.NotifyCanExecuteChanged();
         }
 
+=======
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         [ObservableProperty]
         private bool isLoading;
 
@@ -50,10 +53,17 @@ namespace ElectricalPOS.ViewModels
 
         public InvoicesViewModel()
         {
+<<<<<<< HEAD
             _ = LoadDataAsync();
         }
 
         private async Task LoadDataAsync()
+=======
+            LoadDataAsync();
+        }
+
+        private async void LoadDataAsync()
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         {
             IsLoading = true;
             try
@@ -92,7 +102,11 @@ namespace ElectricalPOS.ViewModels
         {
             if (string.IsNullOrWhiteSpace(SearchInvoiceNumber))
             {
+<<<<<<< HEAD
                 await LoadDataAsync();
+=======
+                LoadDataAsync();
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                 return;
             }
 
@@ -125,10 +139,17 @@ namespace ElectricalPOS.ViewModels
         }
 
         [RelayCommand]
+<<<<<<< HEAD
         private async Task ClearSearchAsync()
         {
             SearchInvoiceNumber = string.Empty;
             await LoadDataAsync();
+=======
+        private void ClearSearch()
+        {
+            SearchInvoiceNumber = string.Empty;
+            LoadDataAsync();
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         [RelayCommand]
@@ -208,6 +229,7 @@ namespace ElectricalPOS.ViewModels
             try
             {
                 var fullSale = await _invoiceService.GetSaleByIdAsync(sale.Id);
+<<<<<<< HEAD
                 if (fullSale == null)
                 {
                     MessageBox.Show("تعذّر تحميل بيانات الفاتورة.", "طباعة", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -221,6 +243,14 @@ namespace ElectricalPOS.ViewModels
             {
                 MessageBox.Show($"خطأ في الطباعة: {ex.Message}", "طباعة الفاتورة",
                     MessageBoxButton.OK, MessageBoxImage.Error);
+=======
+                if (fullSale != null)
+                {
+                    // Print functionality - will use the print service
+                    var printService = new InvoicePrintService();
+                    await printService.PrintInvoiceAsync(fullSale);
+                }
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             }
             finally
             {
@@ -249,6 +279,7 @@ namespace ElectricalPOS.ViewModels
                 IsLoading = false;
             }
         }
+<<<<<<< HEAD
 
         private bool CanReverseSale(Sale? sale) => (sale ?? SelectedInvoice) != null;
 
@@ -297,5 +328,7 @@ namespace ElectricalPOS.ViewModels
                 ReverseSaleCommand.NotifyCanExecuteChanged();
             }
         }
+=======
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
     }
 }

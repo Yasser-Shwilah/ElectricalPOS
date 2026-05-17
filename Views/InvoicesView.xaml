@@ -42,7 +42,10 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+<<<<<<< HEAD
                     <ColumnDefinition Width="Auto"/>
+=======
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0"
@@ -69,13 +72,18 @@
                         Style="{StaticResource ArabicOutlinedButtonStyle}"
                         Command="{Binding ClearSearchCommand}"
                         ToolTip="مسح البحث وعرض الكل"
+<<<<<<< HEAD
                         Padding="15,8"
                         Margin="0,0,5,0">
+=======
+                        Padding="15,8">
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Refresh" VerticalAlignment="Center" Margin="0,0,5,0"/>
                         <TextBlock Text="إظهار الكل" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
+<<<<<<< HEAD
 
                 <Button Grid.Column="3"
                         Style="{StaticResource ArabicOutlinedButtonStyle}"
@@ -90,6 +98,8 @@
                         <TextBlock Text="استرجاع" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
+=======
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             </Grid>
         </materialDesign:Card>
 
@@ -153,11 +163,16 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
+<<<<<<< HEAD
                         <DataGridTemplateColumn Header="إجراءات" Width="200">
+=======
+                        <DataGridTemplateColumn Header="إجراءات" Width="140">
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                         <Button Style="{StaticResource MaterialDesignFlatButton}"
+<<<<<<< HEAD
                                                 Command="{Binding DataContext.ReverseSaleCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                 CommandParameter="{Binding}"
                                                 ToolTip="استرجاع هذه الفاتورة"
@@ -165,6 +180,8 @@
                                             <materialDesign:PackIcon Kind="Undo" Foreground="#C62828"/>
                                         </Button>
                                         <Button Style="{StaticResource MaterialDesignFlatButton}"
+=======
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                                                 Command="{Binding DataContext.PrintInvoiceCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                 CommandParameter="{Binding}"
                                                 ToolTip="طباعة الفاتورة"

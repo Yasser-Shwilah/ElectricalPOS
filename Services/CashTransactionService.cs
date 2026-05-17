@@ -128,6 +128,7 @@ namespace ElectricalPOS.Services
             return transactions.Sum(t => t.Amount);
         }
 
+<<<<<<< HEAD
         public async Task<decimal> GetYearlyIncomeAsync(DateTime date)
         {
             using var context = new ElectricalPOSContext();
@@ -159,6 +160,18 @@ namespace ElectricalPOS.Services
             summary["TodayIncome"] = await GetTodayIncomeAsync(today);
             summary["TodayExpense"] = await GetTodayExpenseAsync(today);
             summary["MonthExpense"] = await GetMonthlyExpenseAsync(today);
+=======
+        public async Task<Dictionary<string, decimal>> GetCashSummaryAsync()
+        {
+            var summary = new Dictionary<string, decimal>();
+            
+            summary["TotalIncome"] = await GetTotalIncomeAsync();
+            summary["TotalExpense"] = await GetTotalExpenseAsync();
+            summary["CurrentBalance"] = await GetCurrentCashBalanceAsync();
+            summary["TodayIncome"] = await GetTodayIncomeAsync(DateTime.Today);
+            summary["TodayExpense"] = await GetTodayExpenseAsync(DateTime.Today);
+            summary["MonthExpense"] = await GetMonthlyExpenseAsync(DateTime.Today);
+>>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             
             return summary;
         }
