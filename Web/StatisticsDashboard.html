@@ -1,0 +1,856 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإحصائيات والمراقبة</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: #f5f7fa;
+            overflow: auto;
+        }
+        
+        .dashboard-container {
+            padding: 20px;
+            min-height: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header h1 {
+            color: #1e293b;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .kpi-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        
+        .kpi-card.primary { border-right: 4px solid #1976D2; }
+        .kpi-card.success { border-right: 4px solid #10B981; }
+        .kpi-card.warning { border-right: 4px solid #F59E0B; }
+        .kpi-card.danger { border-right: 4px solid #EF4444; }
+        .kpi-card.info { border-right: 4px solid #6366F1; }
+        .kpi-card.secondary { border-right: 4px solid #8B5CF6; }
+        
+        .kpi-title {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .kpi-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .kpi-subtitle {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .chart-card.full-width {
+            grid-column: span 2;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 300px;
+        }
+        
+        .chart-container-small {
+            width: 100%;
+            height: 250px;
+        }
+        
+        /* Loading indicator */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f5f7fa;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1976D2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* RTL specific */
+        .kpi-card {
+            border-right: none;
+            border-left: 4px solid;
+        }
+        
+        .kpi-card.primary { border-left-color: #1976D2; }
+        .kpi-card.success { border-left-color: #10B981; }
+        .kpi-card.warning { border-left-color: #F59E0B; }
+        .kpi-card.danger { border-left-color: #EF4444; }
+        .kpi-card.info { border-left-color: #6366F1; }
+        .kpi-card.secondary { border-left-color: #8B5CF6; }
+        
+        @media (max-width: 1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .chart-card.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container" id="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <h1>لوحة الإحصائيات والمراقبة</h1>
+            <p>نظرة شاملة على أداء العمل والمبيعات</p>
+        </div>
+        
+        <!-- KPI Cards -->
+        <div class="kpi-grid" id="kpiGrid">
+            <div class="kpi-card primary">
+                <div class="kpi-title">مبيعات اليوم</div>
+                <div class="kpi-value" id="todaySales">0</div>
+                <div class="kpi-subtitle" id="todaySalesCount">0 عملية</div>
+            </div>
+            <div class="kpi-card success">
+                <div class="kpi-title">ربح اليوم</div>
+                <div class="kpi-value" id="todayProfit">0</div>
+                <div class="kpi-subtitle">صافي الربح</div>
+            </div>
+            <div class="kpi-card warning">
+                <div class="kpi-title">مبيعات الأسبوع</div>
+                <div class="kpi-value" id="weekSales">0</div>
+                <div class="kpi-subtitle" id="weekProfit">ربح: 0</div>
+            </div>
+            <div class="kpi-card info">
+                <div class="kpi-title">مبيعات الشهر</div>
+                <div class="kpi-value" id="monthSales">0</div>
+                <div class="kpi-subtitle" id="monthProfit">ربح: 0</div>
+            </div>
+            <div class="kpi-card primary">
+                <div class="kpi-title">إجمالي المنتجات</div>
+                <div class="kpi-value" id="totalProducts">0</div>
+                <div class="kpi-subtitle">منتج في المخزون</div>
+            </div>
+            <div class="kpi-card secondary">
+                <div class="kpi-title">العملاء</div>
+                <div class="kpi-value" id="totalCustomers">0</div>
+                <div class="kpi-subtitle">عميل مسجل</div>
+            </div>
+            <div class="kpi-card danger">
+                <div class="kpi-title">مخزون منخفض</div>
+                <div class="kpi-value" id="lowStock">0</div>
+                <div class="kpi-subtitle" id="outOfStock">0 نفد المخزون</div>
+            </div>
+            <div class="kpi-card warning">
+                <div class="kpi-title">مصروفات الشهر</div>
+                <div class="kpi-value" id="monthExpenses">0</div>
+                <div class="kpi-subtitle">المصروفات الشهرية</div>
+            </div>
+        </div>
+        
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Sales Trend Chart -->
+            <div class="chart-card full-width">
+                <div class="chart-title">المبيعات آخر 7 أيام</div>
+                <div id="salesLast7DaysChart" class="chart-container"></div>
+            </div>
+            
+            <!-- Monthly Sales Chart -->
+            <div class="chart-card full-width">
+                <div class="chart-title">المبيعات الشهرية (آخر 12 شهر)</div>
+                <div id="monthlySalesChart" class="chart-container"></div>
+            </div>
+            
+            <!-- Sales by Category Pie Chart -->
+            <div class="chart-card">
+                <div class="chart-title">المبيعات حسب التصنيف</div>
+                <div id="categorySalesChart" class="chart-container-small"></div>
+            </div>
+            
+            <!-- Profit by Category Pie Chart -->
+            <div class="chart-card">
+                <div class="chart-title">الربح حسب التصنيف</div>
+                <div id="profitByCategoryChart" class="chart-container-small"></div>
+            </div>
+            
+            <!-- Top Selling Products -->
+            <div class="chart-card">
+                <div class="chart-title">أكثر المنتجات مبيعاً</div>
+                <div id="topSellingChart" class="chart-container-small"></div>
+            </div>
+            
+            <!-- Top Profitable Products -->
+            <div class="chart-card">
+                <div class="chart-title">أكثر المنتجات ربحية</div>
+                <div id="topProfitableChart" class="chart-container-small"></div>
+            </div>
+            
+            <!-- Inventory Status -->
+            <div class="chart-card">
+                <div class="chart-title">حالة المخزون</div>
+                <div id="inventoryStatusChart" class="chart-container-small"></div>
+            </div>
+            
+            <!-- Payment Methods -->
+            <div class="chart-card">
+                <div class="chart-title">المبيعات حسب طريقة الدفع</div>
+                <div id="paymentMethodChart" class="chart-container-small"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ECharts instances
+        let salesLast7DaysChart, monthlySalesChart, categorySalesChart;
+        let profitByCategoryChart, topSellingChart, topProfitableChart;
+        let inventoryStatusChart, paymentMethodChart;
+
+        // Arabic font
+        const arabicFont = "'Segoe UI', Tahoma, Arial, sans-serif";
+
+        // Color palette
+        const colors = {
+            primary: '#1976D2',
+            success: '#10B981',
+            warning: '#F59E0B',
+            danger: '#EF4444',
+            info: '#6366F1',
+            purple: '#8B5CF6'
+        };
+
+        // Format currency - display with commas and 2 decimal places
+        function formatCurrency(value) {
+            return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Initialize all charts
+        function initializeCharts() {
+            // Sales Last 7 Days Line Chart
+            const salesLast7DaysDom = document.getElementById('salesLast7DaysChart');
+            if (salesLast7DaysDom) {
+                salesLast7DaysChart = echarts.init(salesLast7DaysDom);
+            }
+
+            // Monthly Sales Bar Chart
+            const monthlySalesDom = document.getElementById('monthlySalesChart');
+            if (monthlySalesDom) {
+                monthlySalesChart = echarts.init(monthlySalesDom);
+            }
+
+            // Category Sales Pie Chart
+            const categorySalesDom = document.getElementById('categorySalesChart');
+            if (categorySalesDom) {
+                categorySalesChart = echarts.init(categorySalesDom);
+            }
+
+            // Profit by Category Pie Chart
+            const profitByCategoryDom = document.getElementById('profitByCategoryChart');
+            if (profitByCategoryDom) {
+                profitByCategoryChart = echarts.init(profitByCategoryDom);
+            }
+
+            // Top Selling Products Bar Chart
+            const topSellingDom = document.getElementById('topSellingChart');
+            if (topSellingDom) {
+                topSellingChart = echarts.init(topSellingDom);
+            }
+
+            // Top Profitable Products Bar Chart
+            const topProfitableDom = document.getElementById('topProfitableChart');
+            if (topProfitableDom) {
+                topProfitableChart = echarts.init(topProfitableDom);
+            }
+
+            // Inventory Status Pie Chart
+            const inventoryStatusDom = document.getElementById('inventoryStatusChart');
+            if (inventoryStatusDom) {
+                inventoryStatusChart = echarts.init(inventoryStatusDom);
+            }
+
+            // Payment Method Pie Chart
+            const paymentMethodDom = document.getElementById('paymentMethodChart');
+            if (paymentMethodDom) {
+                paymentMethodChart = echarts.init(paymentMethodDom);
+            }
+        }
+
+        // Update KPI values
+        function updateKPIs(summary) {
+            if (!summary) return;
+            
+            document.getElementById('todaySales').textContent = formatCurrency(summary.TodaySales) + ' $';
+            document.getElementById('todaySalesCount').textContent = summary.TodaySalesCount + ' عملية';
+            document.getElementById('todayProfit').textContent = formatCurrency(summary.TodayProfit) + ' $';
+            document.getElementById('weekSales').textContent = formatCurrency(summary.WeekSales) + ' $';
+            document.getElementById('weekProfit').textContent = 'ربح: ' + formatCurrency(summary.WeekProfit) + ' $';
+            document.getElementById('monthSales').textContent = formatCurrency(summary.MonthSales) + ' $';
+            document.getElementById('monthProfit').textContent = 'ربح: ' + formatCurrency(summary.MonthProfit) + ' $';
+            document.getElementById('totalProducts').textContent = summary.TotalProducts;
+            document.getElementById('totalCustomers').textContent = summary.TotalCustomers;
+            document.getElementById('lowStock').textContent = summary.LowStockCount;
+            document.getElementById('outOfStock').textContent = summary.OutOfStockCount + ' نفد المخزون';
+            document.getElementById('monthExpenses').textContent = formatCurrency(summary.MonthExpenses) + ' $';
+        }
+
+        // Update Sales Last 7 Days Chart
+        function updateSalesLast7DaysChart(data) {
+            if (!salesLast7DaysChart || !data || data.length === 0) return;
+
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'cross' }
+                },
+                legend: {
+                    data: ['المبيعات', 'الربح'],
+                    right: 10,
+                    top: 0,
+                    textStyle: { fontFamily: arabicFont }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    top: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: data.map(d => d.dayName),
+                    axisLabel: { fontFamily: arabicFont },
+                    axisLine: { lineStyle: { color: '#666' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'المبلغ',
+                    axisLabel: { 
+                        fontFamily: arabicFont,
+                        formatter: (value) => formatCurrency(value)
+                    },
+                    splitLine: { lineStyle: { type: 'dashed' } }
+                },
+                series: [
+                    {
+                        name: 'المبيعات',
+                        type: 'line',
+                        data: data.map(d => d.sales),
+                        smooth: true,
+                        symbol: 'circle',
+                        symbolSize: 8,
+                        lineStyle: { color: colors.primary, width: 3 },
+                        itemStyle: { color: colors.primary },
+                        areaStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0, y: 0, x2: 0, y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: 'rgba(25, 118, 210, 0.3)' },
+                                    { offset: 1, color: 'rgba(25, 118, 210, 0.05)' }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        name: 'الربح',
+                        type: 'line',
+                        data: data.map(d => d.profit),
+                        smooth: true,
+                        symbol: 'circle',
+                        symbolSize: 8,
+                        lineStyle: { color: colors.success, width: 3 },
+                        itemStyle: { color: colors.success }
+                    }
+                ]
+            };
+            salesLast7DaysChart.setOption(option);
+        }
+
+        // Update Monthly Sales Chart
+        function updateMonthlySalesChart(data) {
+            if (!monthlySalesChart || !data || data.length === 0) return;
+
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' }
+                },
+                legend: {
+                    data: ['المبيعات', 'الربح'],
+                    right: 10,
+                    top: 0,
+                    textStyle: { fontFamily: arabicFont }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    top: '15%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: data.map(d => d.monthName),
+                    axisLabel: { fontFamily: arabicFont, rotate: 45 },
+                    axisLine: { lineStyle: { color: '#666' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'المبلغ',
+                    axisLabel: { 
+                        fontFamily: arabicFont,
+                        formatter: (value) => formatCurrency(value)
+                    },
+                    splitLine: { lineStyle: { type: 'dashed' } }
+                },
+                series: [
+                    {
+                        name: 'المبيعات',
+                        type: 'bar',
+                        data: data.map(d => d.sales),
+                        itemStyle: { color: colors.primary },
+                        barWidth: '40%'
+                    },
+                    {
+                        name: 'الربح',
+                        type: 'bar',
+                        data: data.map(d => d.profit),
+                        itemStyle: { color: colors.success },
+                        barWidth: '40%'
+                    }
+                ]
+            };
+            monthlySalesChart.setOption(option);
+        }
+
+        // Update Category Sales Pie Chart
+        function updateCategorySalesChart(data) {
+            if (!categorySalesChart || !data || data.length === 0) return;
+
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    textStyle: { fontFamily: arabicFont }
+                },
+                series: [{
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    center: ['40%', '50%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: { show: false },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            fontFamily: arabicFont
+                        }
+                    },
+                    data: data.map((d, i) => ({
+                        name: d.name,
+                        value: d.value,
+                        itemStyle: { color: getColor(i) }
+                    }))
+                }]
+            };
+            categorySalesChart.setOption(option);
+        }
+
+        // Update Profit by Category Pie Chart
+        function updateProfitByCategoryChart(data) {
+            if (!profitByCategoryChart || !data || data.length === 0) return;
+
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    textStyle: { fontFamily: arabicFont }
+                },
+                series: [{
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    center: ['40%', '50%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: { show: false },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            fontFamily: arabicFont
+                        }
+                    },
+                    data: data.map((d, i) => ({
+                        name: d.name,
+                        value: d.value,
+                        itemStyle: { color: getColor(i + 5) }
+                    }))
+                }]
+            };
+            profitByCategoryChart.setOption(option);
+        }
+
+        // Update Top Selling Products Chart
+        function updateTopSellingChart(data) {
+            if (!topSellingChart || !data || data.length === 0) return;
+
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' },
+                    formatter: '{b}: {c} وحدة'
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    top: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    axisLabel: { fontFamily: arabicFont },
+                    splitLine: { lineStyle: { type: 'dashed' } }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: data.map(d => d.name).reverse(),
+                    axisLabel: { fontFamily: arabicFont, width: 100, overflow: 'truncate' },
+                    axisLine: { lineStyle: { color: '#666' } }
+                },
+                series: [{
+                    type: 'bar',
+                    data: data.map(d => d.quantity).reverse(),
+                    barWidth: '60%',
+                    itemStyle: { color: colors.warning },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        fontFamily: arabicFont
+                    }
+                }]
+            };
+            topSellingChart.setOption(option);
+        }
+
+        // Update Top Profitable Products Chart
+        function updateTopProfitableChart(data) {
+            if (!topProfitableChart || !data || data.length === 0) return;
+
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' },
+                    formatter: '{b}: {c}'
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    top: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    axisLabel: { 
+                        fontFamily: arabicFont,
+                        formatter: (value) => formatCurrency(value)
+                    },
+                    splitLine: { lineStyle: { type: 'dashed' } }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: data.map(d => d.name).reverse(),
+                    axisLabel: { fontFamily: arabicFont, width: 100, overflow: 'truncate' },
+                    axisLine: { lineStyle: { color: '#666' } }
+                },
+                series: [{
+                    type: 'bar',
+                    data: data.map(d => d.amount).reverse(),
+                    barWidth: '60%',
+                    itemStyle: { color: colors.success },
+                    label: {
+                        show: true,
+                        position: 'right',
+                        fontFamily: arabicFont,
+                        formatter: (value) => formatCurrency(value.value)
+                    }
+                }]
+            };
+            topProfitableChart.setOption(option);
+        }
+
+        // Update Inventory Status Chart
+        function updateInventoryStatusChart(data) {
+            if (!inventoryStatusChart || !data || data.length === 0) return;
+
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    textStyle: { fontFamily: arabicFont }
+                },
+                series: [{
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    center: ['40%', '50%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: { show: false },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            fontFamily: arabicFont
+                        }
+                    },
+                    data: [
+                        { name: 'متوفر', value: data[0]?.value || 0, itemStyle: { color: colors.success } },
+                        { name: 'مخزون منخفض', value: data[1]?.value || 0, itemStyle: { color: colors.warning } },
+                        { name: 'نفد المخزون', value: data[2]?.value || 0, itemStyle: { color: colors.danger } }
+                    ]
+                }]
+            };
+            inventoryStatusChart.setOption(option);
+        }
+
+        // Update Payment Method Chart
+        function updatePaymentMethodChart(data) {
+            if (!paymentMethodChart || !data || data.length === 0) return;
+
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    textStyle: { fontFamily: arabicFont }
+                },
+                series: [{
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    center: ['40%', '50%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: { show: false },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            fontFamily: arabicFont
+                        }
+                    },
+                    data: data.map((d, i) => ({
+                        name: d.name,
+                        value: d.value,
+                        itemStyle: { color: getColor(i + 3) }
+                    }))
+                }]
+            };
+            paymentMethodChart.setOption(option);
+        }
+
+        // Get color by index
+        function getColor(index) {
+            const colorPalette = [
+                colors.primary,
+                colors.success,
+                colors.warning,
+                colors.danger,
+                colors.info,
+                colors.purple,
+                '#EC4899',
+                '#14B8A6',
+                '#F97316',
+                '#6366F1'
+            ];
+            return colorPalette[index % colorPalette.length];
+        }
+
+        // Receive data from WPF
+        function setDashboardData(data) {
+            if (!data) return;
+            
+            // Update KPIs
+            if (data.summary) {
+                updateKPIs(data.summary);
+            }
+            
+            // Update charts
+            if (data.last7DaysSales) {
+                updateSalesLast7DaysChart(data.last7DaysSales);
+            }
+            
+            if (data.last12MonthsSales) {
+                updateMonthlySalesChart(data.last12MonthsSales);
+            }
+            
+            if (data.categorySales) {
+                updateCategorySalesChart(data.categorySales);
+            }
+            
+            if (data.profitByCategory) {
+                updateProfitByCategoryChart(data.profitByCategory);
+            }
+            
+            if (data.topSellingProducts) {
+                updateTopSellingChart(data.topSellingProducts);
+            }
+            
+            if (data.topProfitableProducts) {
+                updateTopProfitableChart(data.topProfitableProducts);
+            }
+            
+            if (data.inventoryStatus) {
+                updateInventoryStatusChart(data.inventoryStatus);
+            }
+            
+            if (data.paymentMethod) {
+                updatePaymentMethodChart(data.paymentMethod);
+            }
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (salesLast7DaysChart) salesLast7DaysChart.resize();
+            if (monthlySalesChart) monthlySalesChart.resize();
+            if (categorySalesChart) categorySalesChart.resize();
+            if (profitByCategoryChart) profitByCategoryChart.resize();
+            if (topSellingChart) topSellingChart.resize();
+            if (topProfitableChart) topProfitableChart.resize();
+            if (inventoryStatusChart) inventoryStatusChart.resize();
+            if (paymentMethodChart) paymentMethodChart.resize();
+        });
+
+        // Initialize on load
+        window.onload = function() {
+            initializeCharts();
+            
+            // Signal that dashboard is ready
+            if (window.chrome && window.chrome.webview) {
+                window.chrome.webview.postMessage('DashboardReady');
+            }
+        };
+    </script>
+</body>
+</html>
+
+
+

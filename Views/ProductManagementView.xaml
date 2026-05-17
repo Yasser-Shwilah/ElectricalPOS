@@ -1,0 +1,253 @@
+<UserControl x:Class="ElectricalPOS.Views.ProductManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:vm="clr-namespace:ElectricalPOS.ViewModels"
+             mc:Ignorable="d"
+             FlowDirection="RightToLeft"
+             FontFamily="{StaticResource ArabicFont}"
+             d:DesignHeight="700" d:DesignWidth="900">
+
+    <UserControl.DataContext>
+        <vm:ProductViewModel/>
+    </UserControl.DataContext>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Page Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="إدارة المنتجات"
+                       Style="{StaticResource ArabicHeaderStyle}"
+                       FontSize="24"/>
+            <TextBlock Text="إضافة وتعديل وحذف المنتجات والأصناف"
+                       Style="{StaticResource ArabicTextStyle}"
+                       Foreground="#757575"
+                       FontSize="14"/>
+        </StackPanel>
+
+        <!-- Form Section -->
+        <materialDesign:Card Grid.Row="1"
+                             Style="{StaticResource ArabicCardStyle}"
+                             Margin="0,0,0,15">
+            <StackPanel>
+                <TextBlock Text="{Binding IsEditMode, Converter={StaticResource BooleanToStringConverter}, ConverterParameter='تعديل المنتج|إضافة منتج جديد'}"
+                           Style="{StaticResource ArabicSubHeaderStyle}"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Product Name -->
+                    <TextBox Grid.Row="0" Grid.Column="0"
+                             materialDesign:HintAssist.Hint="اسم المنتج"
+                             materialDesign:HintAssist.IsFloating="True"
+                             Style="{StaticResource ArabicTextBoxStyle}"
+                             Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="أدخل اسم المنتج"
+                             Margin="5"/>
+
+                    <!-- Category -->
+                    <ComboBox Grid.Row="0" Grid.Column="1"
+                              materialDesign:HintAssist.Hint="التصنيف"
+                              materialDesign:HintAssist.IsFloating="True"
+                              Style="{StaticResource ArabicComboBoxStyle}"
+                              ItemsSource="{Binding Categories}"
+                              SelectedItem="{Binding SelectedCategory}"
+                              DisplayMemberPath="Name"
+                              ToolTip="اختر تصنيف المنتج"
+                              Margin="5"/>
+
+                    <!-- Quantity -->
+                    <TextBox Grid.Row="0" Grid.Column="2"
+                             materialDesign:HintAssist.Hint="الكمية"
+                             materialDesign:HintAssist.IsFloating="True"
+                             Style="{StaticResource ArabicNumericTextBoxStyle}"
+                             Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="حدد الكمية المتوفرة"
+                             Margin="5"/>
+
+                    <!-- Purchase Price -->
+                    <TextBox Grid.Row="1" Grid.Column="0"
+                             materialDesign:HintAssist.Hint="سعر الشراء"
+                             materialDesign:HintAssist.IsFloating="True"
+                             Style="{StaticResource ArabicNumericTextBoxStyle}"
+                             Text="{Binding PurchasePrice, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                             ToolTip="أدخل سعر الشراء"
+                             Margin="5"/>
+
+                    <!-- Sale Price -->
+                    <TextBox Grid.Row="1" Grid.Column="1"
+                             materialDesign:HintAssist.Hint="سعر البيع"
+                             materialDesign:HintAssist.IsFloating="True"
+                             Style="{StaticResource ArabicNumericTextBoxStyle}"
+                             Text="{Binding SalePrice, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                             ToolTip="أدخل سعر البيع"
+                             Margin="5"/>
+
+                    <!-- Model Number (Optional) -->
+                    <TextBox Grid.Row="1" Grid.Column="2"
+                             materialDesign:HintAssist.Hint="رقم الموديل (اختياري)"
+                             materialDesign:HintAssist.IsFloating="True"
+                             Style="{StaticResource ArabicTextBoxStyle}"
+                             Text="{Binding ModelNumber, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="أدخل رقم الموديل للمنتج (اختياري)"
+                             Margin="5"/>
+                </Grid>
+
+                <!-- Action Buttons -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            Margin="5,15,5,0">
+                    <!-- Add Button -->
+                    <Button Content="إضافة"
+                            Style="{StaticResource ArabicSuccessButtonStyle}"
+                            Command="{Binding AddProductCommand}"
+                            Visibility="{Binding IsEditMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+                            ToolTip="إضافة منتج جديد">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBlock Text="إضافة" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
+
+                    <!-- Update Button -->
+                    <Button Content="تحديث"
+                            Style="{StaticResource ArabicButtonStyle}"
+                            Command="{Binding UpdateProductCommand}"
+                            Visibility="{Binding IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            ToolTip="تحديث بيانات المنتج">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBlock Text="تحديث" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
+
+                    <!-- Clear Button -->
+                    <Button Content="مسح"
+                            Style="{StaticResource ArabicOutlinedButtonStyle}"
+                            Command="{Binding ClearFormCommand}"
+                            ToolTip="مسح النموذج">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Eraser" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBlock Text="مسح" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </materialDesign:Card>
+
+        <!-- Products DataGrid -->
+        <materialDesign:Card Grid.Row="2"
+                             Style="{StaticResource ArabicCardStyle}">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,0,0,10">
+                    <TextBlock Text="قائمة المنتجات"
+                               Style="{StaticResource ArabicSubHeaderStyle}" VerticalAlignment="Center"/>
+                    <TextBlock Text="(" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                    <TextBlock Text="{Binding ProductsCount}" VerticalAlignment="Center"/>
+                    <TextBlock Text=")" VerticalAlignment="Center"/>
+
+                    <TextBox Width="250" Margin="20,0,0,0"
+                             materialDesign:HintAssist.Hint="ابحث عن منتج"
+                             Style="{StaticResource ArabicTextBoxStyle}"
+                             Text="{Binding ProductSearchText, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="أدخل نص للبحث"/>
+
+                    <Button Content="مسح" Margin="8,0,0,0" Command="{Binding ClearSearchCommand}"
+                            Style="{StaticResource ArabicOutlinedButtonStyle}"/>
+                </StackPanel>
+
+                <DataGrid DockPanel.Dock="Bottom"
+                          Style="{StaticResource ArabicDataGridStyle}"
+                          ItemsSource="{Binding Products}"
+                          SelectedItem="{Binding SelectedProduct}"
+                          ColumnHeaderStyle="{StaticResource ArabicDataGridHeaderStyle}"
+                          CanUserResizeColumns="True"
+                          CanUserReorderColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="الرقم" Binding="{Binding Id}" Width="60">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="اسم المنتج" Binding="{Binding Name}" Width="2*"/>
+                        <DataGridTextColumn Header="الموديل" Binding="{Binding ModelNumber}" Width="*"/>
+                        <DataGridTextColumn Header="التصنيف" Binding="{Binding Category.Name}" Width="*"/>
+                        <DataGridTextColumn Header="سعر الشراء" Binding="{Binding PurchasePrice, StringFormat=N2}" Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                                    <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="سعر البيع" Binding="{Binding SalePrice, StringFormat=N2}" Width="110">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                                    <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="الكمية" Binding="{Binding Quantity}" Width="80">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Header="إجراءات" Width="160">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                                Command="{Binding DataContext.EditProductCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                ToolTip="تعديل المنتج"
+                                                Padding="4" Margin="2,0">
+                                            <materialDesign:PackIcon Kind="Pencil" Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+                                        </Button>
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                                Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                ToolTip="حذف المنتج"
+                                                Padding="4" Margin="2,0">
+                                            <materialDesign:PackIcon Kind="Delete" Foreground="#D32F2F"/>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                    </DataGrid>
+            </DockPanel>
+        </materialDesign:Card>
+    </Grid>
+</UserControl>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإحصائيات</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: #ffffff;
+            overflow: hidden;
+        }
+        .chart-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chart {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <div id="mainChart" class="chart"></div>
+    </div>
+
+    <script>
+        // Apache ECharts - Arabic RTL Configuration
+        var chart = echarts.init(document.getElementById('mainChart'));
+        
+        // Default RTL Arabic configuration
+        var arabicLocale = {
+            "lang": {
+                "renderTip": " render",
+                "dataZoomDrag": "اسحب للتكبير",
+                "dataZoomZoom": "قم بالتكبير",
+                "dataZoomReset": "إعادة تعيين",
+                "downloadButton": "تنزيل الصورة",
+                "toolboxButtonColor": "#8b9dc3",
+                "toolboxButtonFill": "#fff",
+                "resetButtonColor": "#fff",
+                "resetButtonFill": "#8b9dc3",
+                "saveAsImageButtonColor": "#fff",
+                "saveAsImageButtonFill": "#8b9dc3",
+                "dataZoomTitle": {
+                    "zoom": "تكبير",
+                    "back": "إعادة تعيين"
+                },
+                "legendTitle": {
+                    "plain": "وسيلة الإيضاح",
+                    "toggle": "تبديل وسيلة الإيضاح",
+                    "filter": "تصفية وسيلة الإيضاح",
+                    "empty": "لا توجد بيانات"
+                },
+                "tooltip": {
+                    "noData": "لا توجد بيانات",
+                    "axisBrushTip": "انقر لتصفية المزيد",
+                    "seriesTip": "انقر لإخفاء السلسلة"
+                }
+            }
+        };
+        
+        echarts.registerLocale('AR', arabicLocale);
+        
+        // Arabic numeral formatting
+        function formatArabicNumber(num) {
+            var arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            var str = num.toString();
+            var result = '';
+            for (var i = 0; i < str.length; i++) {
+                var ch = str[i];
+                if (!isNaN(ch) && ch !== ' ') {
+                    result += arabicNumerals[parseInt(ch)];
+                } else if (ch === '.') {
+                    result += '٫';
+                } else {
+                    result += ch;
+                }
+            }
+            return result;
+        }
+        
+        // Currency formatter - display with commas and 2 decimal places
+        function formatCurrency(value) {
+            return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Receive chart configuration from WPF
+        function setChartConfig(config) {
+            if (config) {
+                // Apply RTL settings
+                config.rtl = true;
+                
+                // Set default text style for Arabic
+                if (!config.textStyle) {
+                    config.textStyle = {
+                        fontFamily: 'Segoe UI, Tahoma, Arial',
+                        fontSize: 12
+                    };
+                }
+                
+                // Ensure tooltip is RTL
+                if (!config.tooltip) {
+                    config.tooltip = {
+                        trigger: 'axis',
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        textStyle: {
+                            color: '#1e293b',
+                            fontFamily: 'Segoe UI, Tahoma, Arial'
+                        },
+                        axisPointer: {
+                            type: 'cross',
+                            crossStyle: {
+                                color: '#999'
+                            }
+                        }
+                    };
+                }
+                
+                // Ensure legend is RTL
+                if (!config.legend) {
+                    config.legend = {
+                        type: 'scroll',
+                        orient: 'vertical',
+                        right: 10,
+                        top: 'center',
+                        textStyle: {
+                            color: '#64748b',
+                            fontFamily: 'Segoe UI, Tahoma, Arial'
+                        }
+                    };
+                } else {
+                    config.legend.orient = 'vertical';
+                    config.legend.right = 10;
+                    config.legend.top = 'center';
+                    if (!config.legend.textStyle) {
+                        config.legend.textStyle = {
+                            color: '#64748b',
+                            fontFamily: 'Segoe UI, Tahoma, Arial'
+                        };
+                    }
+                }
+                
+                // Ensure grid is proper
+                if (!config.grid) {
+                    config.grid = {
+                        left: '3%',
+                        right: '15%',
+                        bottom: '3%',
+                        top: '10%',
+                        containLabel: true
+                    };
+                }
+                
+                // Ensure toolbox is available
+                if (!config.toolbox) {
+                    config.toolbox = {
+                        feature: {
+                            saveAsImage: { title: 'حفظ كصورة' },
+                            dataZoom: { title: { zoom: 'تكبير', back: 'إعادة' } },
+                            restore: { title: 'إعادة تعيين' }
+                        },
+                        right: 20
+                    };
+                }
+                
+                chart.setOption(config, true);
+            }
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            chart.resize();
+        });
+        
+        // Signal that chart is ready
+        window.onload = function() {
+            if (window.chrome && window.chrome.webview) {
+                window.chrome.webview.postMessage('ChartReady');
+            }
+        };
+    </script>
+</body>
+</html>

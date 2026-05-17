@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>لوحة الإحصائيات والتحليلات - ElectricalPOS</title>
+    
+    <!-- Apache ECharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Font for Arabic support -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <h1>📊 لوحة الإحصائيات والتحليلات الشاملة</h1>
+            <p class="subtitle">نظرة شاملة على أداء محل الأجهزة الكهربائية</p>
+        </header>
+
+        <section class="filter-section">
+            <button class="filter-btn active" data-period="today" id="filter-today">اليوم</button>
+            <button class="filter-btn" data-period="week" id="filter-week">الأسبوع</button>
+            <button class="filter-btn" data-period="month" id="filter-month">الشهر</button>
+        </section>
+
+        <!-- KPI Cards Section -->
+        <!-- Sales KPIs Row -->
+        <section class="kpi-section">
+            <!-- KPI 1: Total Sales - Blue -->
+            <div class="kpi-card kpi-sales">
+                <div class="kpi-icon">🛒</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">إجمالي المبيعات</span>
+                    <span class="kpi-value" id="kpi-total-sales">$0.00</span>
+                </div>
+            </div>
+
+            <!-- KPI 2: Total Sales Today - Blue -->
+            <div class="kpi-card kpi-sales">
+                <div class="kpi-icon">📅</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">المبيعات اليوم</span>
+                    <span class="kpi-value" id="kpi-sales-today">$0.00</span>
+                </div>
+            </div>
+
+            <!-- KPI 3: Weekly Sales - Blue -->
+            <div class="kpi-card kpi-sales">
+                <div class="kpi-icon">📆</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">المبيعات الأسبوعية</span>
+                    <span class="kpi-value" id="kpi-weekly-sales">$0.00</span>
+                </div>
+            </div>
+
+            <!-- KPI 4: Monthly Sales - Blue -->
+            <div class="kpi-card kpi-sales">
+                <div class="kpi-icon">🗓️</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">المبيعات الشهرية</span>
+                    <span class="kpi-value" id="kpi-monthly-sales">$0.00</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profit & Transactions KPIs Row -->
+        <section class="kpi-section">
+            <!-- KPI 5: Total Profit - Green -->
+            <div class="kpi-card kpi-profit">
+                <div class="kpi-icon">💰</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">إجمالي الربح</span>
+                    <span class="kpi-value" id="kpi-total-profit">$0.00</span>
+                </div>
+            </div>
+
+            <!-- KPI 6: Profit Today - Green -->
+            <div class="kpi-card kpi-profit">
+                <div class="kpi-icon">📈</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">ربح اليوم</span>
+                    <span class="kpi-value" id="kpi-profit-today">$0.00</span>
+                </div>
+            </div>
+
+            <!-- KPI 7: Monthly Profit - Green -->
+            <div class="kpi-card kpi-profit">
+                <div class="kpi-icon">📉</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">ربح الشهر</span>
+                    <span class="kpi-value" id="kpi-monthly-profit">$0.00</span>
+                </div>
+            </div>
+
+            <!-- KPI 8: Transactions - Orange -->
+            <div class="kpi-card kpi-invoices">
+                <div class="kpi-icon">🧾</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">المعاملات</span>
+                    <span class="kpi-value" id="kpi-transactions">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Inventory & Products KPIs Row -->
+        <section class="kpi-section">
+            <!-- KPI 9: Inventory Value - Teal -->
+            <div class="kpi-card kpi-products">
+                <div class="kpi-icon">📦</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">قيمة المخزون</span>
+                    <span class="kpi-value" id="kpi-inventory-value">$0.00</span>
+                </div>
+            </div>
+
+            <!-- KPI 10: Total Products - Teal -->
+            <div class="kpi-card kpi-products">
+                <div class="kpi-icon">🏷️</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">إجمالي المنتجات</span>
+                    <span class="kpi-value" id="kpi-total-products">0</span>
+                </div>
+            </div>
+
+            <!-- KPI 11: Low Stock - Red -->
+            <div class="kpi-card kpi-lowstock">
+                <div class="kpi-icon">⚠️</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">مخزون منخفض</span>
+                    <span class="kpi-value" id="kpi-low-stock">0</span>
+                </div>
+            </div>
+
+            <!-- KPI 12: Out of Stock - Red -->
+            <div class="kpi-card kpi-danger">
+                <div class="kpi-icon">🚫</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">نفذ من المخزون</span>
+                    <span class="kpi-value" id="kpi-out-of-stock">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Supplier & Purchase KPIs Row -->
+        <section class="kpi-section">
+            <!-- KPI 13: Total Purchases - Purple -->
+            <div class="kpi-card kpi-average">
+                <div class="kpi-icon">🛍️</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">إجمالي المشتريات</span>
+                    <span class="kpi-value" id="kpi-total-purchases">$0.00</span>
+                </div>
+            </div>
+
+            <!-- KPI 14: Supplier Debt - Red -->
+            <div class="kpi-card kpi-danger">
+                <div class="kpi-icon">💳</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">ديون الموردين</span>
+                    <span class="kpi-value" id="kpi-supplier-debt">$0.00</span>
+                </div>
+            </div>
+
+            <!-- KPI 15: Top Supplier - Cyan -->
+            <div class="kpi-card kpi-info">
+                <div class="kpi-icon">🏆</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">أفضل مورد</span>
+                    <span class="kpi-value-small" id="kpi-top-supplier">-</span>
+                </div>
+            </div>
+
+            <!-- KPI 16: Average Product Cost - Gray -->
+            <div class="kpi-card kpi-secondary">
+                <div class="kpi-icon">💵</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">متوسط تكلفة المنتج</span>
+                    <span class="kpi-value" id="kpi-avg-cost">$0.00</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Best Sales Day and Active Hours Info -->
+        <section class="kpi-section">
+            <!-- KPI 17: Best Sales Day -->
+            <div class="kpi-card kpi-sales">
+                <div class="kpi-icon">⭐</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">أفضل يوم مبيعات</span>
+                    <span class="kpi-value-small" id="kpi-best-day">-</span>
+                </div>
+            </div>
+
+            <!-- KPI 18: Average Order Value -->
+            <div class="kpi-card kpi-average">
+                <div class="kpi-icon">📊</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">متوسط قيمة الطلب</span>
+                    <span class="kpi-value" id="kpi-avg-order">$0.00</span>
+                </div>
+            </div>
+
+            <!-- KPI 19: Dead Stock -->
+            <div class="kpi-card kpi-danger">
+                <div class="kpi-icon">💀</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">المخزون الميت</span>
+                    <span class="kpi-value" id="kpi-dead-stock">0</span>
+                </div>
+            </div>
+
+            <!-- KPI 20: Purchase Transactions -->
+            <div class="kpi-card kpi-secondary">
+                <div class="kpi-icon">📋</div>
+                <div class="kpi-content">
+                    <span class="kpi-label">عدد عمليات الشراء</span>
+                    <span class="kpi-value" id="kpi-purchase-transactions">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <!-- Row 1: Sales Last 7 Days (Line) and Top Products (Bar) -->
+            <div class="chart-row">
+                <div class="chart-card">
+                    <h3 class="chart-title">المبيعات اليومية (آخر 7 أيام)</h3>
+                    <div class="chart-container" id="salesLast7DaysChart"></div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 class="chart-title">أفضل المنتجات مبيعاً</h3>
+                    <div class="chart-container" id="topSellingChart"></div>
+                </div>
+            </div>
+
+            <!-- Row 2: Profit by Category (Pie) and Inventory Status (Bar) -->
+            <div class="chart-row">
+                <div class="chart-card">
+                    <h3 class="chart-title">توزيع الربح حسب الفئة</h3>
+                    <div class="chart-container" id="profitByCategoryChart"></div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 class="chart-title">حالة المخزون</h3>
+                    <div class="chart-container" id="inventoryStatusChart"></div>
+                </div>
+            </div>
+
+            <!-- Row 3: Most Profitable Products and Monthly Sales -->
+            <div class="chart-row">
+                <div class="chart-card">
+                    <h3 class="chart-title">المنتجات الأكثر ربحية</h3>
+                    <div class="chart-container" id="mostProfitableChart"></div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 class="chart-title">المبيعات الشهرية (آخر 12 شهر)</h3>
+                    <div class="chart-container" id="monthlySalesChart"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tables-section">
+            <div class="table-card">
+                <h3 class="chart-title">أعلى 10 منتجات ربحية</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>الربح ($)</th>
+                            <th>الكمية المباعة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="top-profitable-table"></tbody>
+                </table>
+            </div>
+
+            <div class="table-card">
+                <h3 class="chart-title">المنتجات الأقل مبيعاً</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>الكمية</th>
+                        </tr>
+                    </thead>
+                    <tbody id="least-selling-table"></tbody>
+                </table>
+            </div>
+
+            <div class="table-card">
+                <h3 class="chart-title">المخزون الميت</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>الكمية</th>
+                            <th>أيام الخمول</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dead-stock-table"></tbody>
+                </table>
+            </div>
+
+            <div class="table-card">
+                <h3 class="chart-title">الموردون الأكثر شراءً</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المورد</th>
+                            <th>إجمالي المشتريات ($)</th>
+                            <th>عدد العمليات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="suppliers-table"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="spinner"></div>
+            <p>جاري تحميل البيانات...</p>
+        </div>
+    </div>
+
+    <!-- ECharts Scripts -->
+    <script src="charts.js"></script>
+</body>
+</html>

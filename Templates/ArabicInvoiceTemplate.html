@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=272, initial-scale=1.0">
+    <title>فاتورة - حاج حساني</title>
+    <style>
+        /* 72mm printable @ 96dpi ≈ 272px; 80mm roll paper */
+        @page {
+            size: 80mm 1200mm;
+            margin: 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 72mm;
+            max-width: 72mm;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        body {
+            width: 72mm;
+            max-width: 72mm;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            font-family: 'Segoe UI', 'Tahoma', sans-serif;
+            font-size: 10px;
+            line-height: 1.3;
+            color: #000;
+            background: #fff;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .invoice-container {
+            width: 72mm;
+            max-width: 72mm;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            padding: 1mm 2mm;
+            background: #fff;
+            display: block;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 3mm;
+            margin-bottom: 3mm;
+        }
+
+        .store-name-main {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 1mm;
+        }
+
+        .store-name-sub {
+            font-size: 11px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 2mm;
+        }
+
+        .store-address {
+            font-size: 9px;
+            font-weight: bold;
+            margin-bottom: 1mm;
+        }
+
+        .store-phone {
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        /* Invoice Info Section */
+        .invoice-info {
+            margin-bottom: 2mm;
+        }
+
+        .invoice-title {
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2mm;
+        }
+
+        .invoice-details {
+            font-size: 9px;
+            display: block;
+        }
+
+        .invoice-details p {
+            display: block;
+            width: 100%;
+        }
+
+        .invoice-details p {
+            margin-bottom: 1mm;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        /* قيم الأرقام والتفاصيل — نفس سماكة الإجمالي */
+        .value-bold,
+        #invoiceNumber,
+        #invoiceDate,
+        #invoiceTime,
+        #customerPhone {
+            font-weight: bold;
+        }
+
+        /* Customer Info */
+        .customer-info {
+            margin-bottom: 2mm;
+            font-size: 9px;
+        }
+
+        .customer-info p {
+            margin-bottom: 1mm;
+        }
+
+        /* Items Table */
+        .items-table {
+            width: 100%;
+            max-width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2mm;
+            font-size: 9px;
+            table-layout: fixed;
+            page-break-inside: auto;
+        }
+
+        .items-table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        .items-table th {
+            background-color: #fff;
+            color: #000;
+            padding: 2mm 1mm;
+            text-align: center;
+            font-weight: bold;
+            font-size: 9px;
+            border-bottom: 1px dashed #000;
+        }
+
+        .items-table td {
+            padding: 1.5mm 1mm;
+            text-align: center;
+            font-size: 9px;
+            border-bottom: 1px dotted #ccc;
+            vertical-align: top;
+        }
+
+        .items-table .number {
+            text-align: center;
+        }
+
+        .items-table td.product-name {
+            text-align: right;
+            direction: rtl;
+            max-width: 30mm;
+            word-wrap: break-word;
+            font-weight: bold;
+        }
+
+        .items-table .left-align {
+            text-align: left;
+            direction: ltr;
+            unicode-bidi: bidi-override;
+            font-weight: bold;
+        }
+
+        .items-table td.number {
+            font-weight: bold;
+        }
+
+        .items-table .right-align {
+            text-align: right;
+        }
+
+        /* Totals Section */
+        .totals-section {
+            margin-top: 2mm;
+            border-top: 1px dashed #000;
+            padding-top: 2mm;
+        }
+
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+
+        .totals-table td {
+            padding: 1mm 0;
+        }
+
+        .totals-table .label-cell {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .totals-table .value-cell {
+            text-align: left;
+            direction: ltr;
+            unicode-bidi: bidi-override;
+            font-weight: bold;
+        }
+
+        .total-row td {
+            font-weight: bold;
+        }
+
+        .grand-total {
+            font-weight: bold;
+            border: none;
+        }
+
+        /* Amount in Words */
+        .amount-in-words {
+            margin-top: 2mm;
+            font-size: 9px;
+            font-style: italic;
+            border-top: 1px dotted #ccc;
+            padding-top: 1mm;
+        }
+
+        /* Note Section */
+        .note-section {
+            margin-top: 2mm;
+            font-size: 9px;
+            min-height: 3mm;
+        }
+
+        .note-section p {
+            margin-bottom: 1mm;
+        }
+
+        .note-line {
+            border-bottom: 1px dotted #ccc;
+            min-height: 3mm;
+        }
+
+        /* Balance Section - Hidden by default, shown only when needed */
+        .balance-section {
+            display: none;
+            margin-top: 2mm;
+            padding-top: 2mm;
+            border-top: 1px dashed #000;
+            font-size: 9px;
+        }
+
+        .balance-section p {
+            margin-bottom: 1mm;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .balance-section .label {
+            font-weight: bold;
+        }
+
+        .balance-section .value {
+            direction: ltr;
+            unicode-bidi: bidi-override;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 3mm;
+            text-align: center;
+            padding-top: 2mm;
+            border-top: 1px dashed #000;
+            font-size: 9px;
+            color: #000;
+        }
+
+        .footer p {
+            margin-bottom: 1mm;
+        }
+
+        /* Print Styles - 80mm thermal roll, 72mm content, no clipping */
+        @media print {
+            html, body {
+                width: 72mm !important;
+                max-width: 72mm !important;
+                height: auto !important;
+                min-height: 0 !important;
+                margin: 0 auto !important;
+                padding: 0 !important;
+                overflow: visible !important;
+                position: static !important;
+                transform: none !important;
+                zoom: 1 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .invoice-container,
+            .header,
+            .invoice-info,
+            .customer-info,
+            .items-table,
+            .items-table tbody,
+            .totals-section,
+            .amount-in-words,
+            .note-section,
+            .footer {
+                width: 100% !important;
+                max-width: 72mm !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                position: static !important;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                page-break-inside: auto;
+            }
+
+            .invoice-container {
+                padding: 0 1mm !important;
+            }
+
+            .items-table {
+                display: table !important;
+            }
+
+            .items-table thead {
+                display: table-header-group !important;
+            }
+
+            .items-table tbody {
+                display: table-row-group !important;
+            }
+
+            .items-table tr {
+                display: table-row !important;
+                page-break-inside: avoid;
+            }
+
+            .items-table th,
+            .items-table td {
+                display: table-cell !important;
+            }
+
+            .store-name-sub,
+            .store-address,
+            .store-phone,
+            #invoiceNumber,
+            #invoiceDate,
+            #invoiceTime,
+            #customerPhone,
+            .items-table td.left-align,
+            .items-table td.number,
+            .items-table td.product-name,
+            .totals-table .value-cell,
+            .balance-section .value {
+                font-weight: 700 !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            @page {
+                size: 80mm 1200mm;
+                margin: 0;
+            }
+        }
+
+        /* Screen-only styles */
+        .print-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            z-index: 1000;
+        }
+
+        .print-button:hover {
+            background-color: #333;
+        }
+
+        /* Preview container for screen */
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+
+        @media screen {
+            body {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body class="thermal-receipt">
+    <!-- Print Button (Hidden when printing) -->
+    <button class="print-button no-print" onclick="window.print()">🖨️ طباعة</button>
+
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="store-name-main">الحاج حساني</div>
+            <div class="store-name-sub">لتجارة الأدوات المنزلية الكهربائية</div>
+            <div class="store-address">الشدادي - الشارع العام مقابل البلدية</div>
+            <div class="store-phone">خدمة الزبائن: 0996120955</div>
+        </div>
+
+        <!-- Invoice Title & Number -->
+        <div class="invoice-info">
+            <div class="invoice-title">فاتورة</div>
+            <div class="invoice-details">
+                <p><span class="label">رقم:</span> <span id="invoiceNumber">0001</span></p>
+                <p><span class="label">التاريخ:</span> <span id="invoiceDate">----/--/--</span></p>
+                <p><span class="label">الوقت:</span> <span id="invoiceTime">--:--:--</span></p>
+            </div>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="customer-info">
+            <p><span class="label">الزبون:</span> <span id="customerName">زبون عام</span></p>
+            <p><span class="label">الهاتف:</span> <span id="customerPhone">-</span></p>
+        </div>
+
+        <!-- Items Table -->
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th style="width: 18%;">سعر</th>
+                    <th style="width: 12%;">الكمية</th>
+                    <th style="width: 45%;">المادة</th>
+                    <th style="width: 18%;">الإجمالي</th>
+                    <th style="width: 7%;">#</th>
+                </tr>
+            </thead>
+            <tbody id="itemsBody">
+                <!-- Items will be inserted here dynamically -->
+                <tr>
+                    <td class="left-align">$150.00</td>
+                    <td class="left-align">2</td>
+                    <td class="product-name">كهرباء منزلية - سلك</td>
+                    <td class="left-align">$300.00</td>
+                    <td class="number">1</td>
+                </tr>
+                <tr>
+                    <td class="left-align">$25.00</td>
+                    <td class="left-align">5</td>
+                    <td class="product-name">مصباح LED</td>
+                    <td class="left-align">$125.00</td>
+                    <td class="number">2</td>
+                </tr>
+                <tr>
+                    <td class="left-align">$15.00</td>
+                    <td class="left-align">10</td>
+                    <td class="product-name">مقبس كهربائي</td>
+                    <td class="left-align">$150.00</td>
+                    <td class="number">3</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Totals Section -->
+        <div class="totals-section">
+            <table class="totals-table">
+                <tr>
+                    <td class="label-cell">المجموع:</td>
+                    <td class="value-cell" id="subtotal">$575.00</td>
+                </tr>
+                <tr>
+                    <td class="label-cell">الخصم:</td>
+                    <td class="value-cell" id="discount">$0.00</td>
+                </tr>
+                <tr class="total-row">
+                    <td class="label-cell">الإجمالي:</td>
+                    <td class="value-cell grand-total" id="totalAmount">$575.00</td>
+                </tr>
+            </table>
+
+            <!-- Amount in Words -->
+            <div class="amount-in-words">
+                <span class="label">فقط: </span>
+                <span id="amountInWords">خمسمائة وخمسة وسبعون دولار فقط</span>
+            </div>
+
+            <!-- Note Section -->
+            <div class="note-section">
+                <p><span class="label">ملاحظة:</span></p>
+                <div class="note-line"></div>
+            </div>
+        </div>
+
+        <!-- Balance Section -->
+        <div class="balance-section">
+            <p><span class="label">الرصيد السابق:</span> <span class="value" id="previousBalance">$0.00</span></p>
+            <p><span class="label">قيمة الفاتورة:</span> <span class="value" id="currentInvoiceValue">$575.00</span></p>
+            <p><span class="label">الرصيد الحالي:</span> <span class="value" id="currentBalance">$575.00</span></p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>شكرا لتعاملكم معنا</p>
+        </div>
+    </div>
+
+    <script>
+        // Function to generate invoice HTML from sale data
+        function generateInvoiceHTML(sale) {
+            // Format date
+            const date = new Date(sale.Date);
+            const dateStr = date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+
+            // Format invoice number - remove dashes and letters
+            let invoiceNum = sale.InvoiceNumber;
+            if (invoiceNum) {
+                invoiceNum = invoiceNum.replace(/[^0-9]/g, '');
+            }
+
+            // Set invoice details
+            document.getElementById('invoiceNumber').textContent = invoiceNum || '000000000000';
+            document.getElementById('invoiceDate').textContent = dateStr;
+            document.getElementById('invoiceTime').textContent = timeStr;
+            
+            document.getElementById('customerName').textContent = sale.CustomerName || 'زبون عام';
+            document.getElementById('customerPhone').textContent = sale.CustomerPhone || '-';
+
+            // Generate items HTML - optimized for 80mm thermal
+            let itemsHTML = '';
+            sale.SaleItems.forEach((item, index) => {
+                itemsHTML += `
+                    <tr>
+                        <td class="left-align value-bold">${item.UnitPrice.toFixed(2)}</td>
+                        <td class="left-align value-bold">${item.Quantity}</td>
+                        <td class="product-name value-bold">${item.Product?.Name || 'منتج'}</td>
+                        <td class="left-align value-bold">${item.TotalPrice.toFixed(2)}</td>
+                        <td class="number value-bold">${index + 1}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('itemsBody').innerHTML = itemsHTML;
+
+            // Calculate totals
+            const subtotal = sale.SaleItems.reduce((sum, item) => sum + item.TotalPrice, 0);
+            const discount = sale.Discount || 0;
+            const total = subtotal - discount;
+
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('discount').textContent = discount.toFixed(2);
+            document.getElementById('totalAmount').textContent = total.toFixed(2);
+
+            // Amount in words (Arabic)
+            document.getElementById('amountInWords').textContent = numberToArabicWords(total);
+
+            // Balance section
+            document.getElementById('previousBalance').textContent = sale.PreviousBalance?.toFixed(2) || '0.00';
+            document.getElementById('currentInvoiceValue').textContent = total.toFixed(2);
+            document.getElementById('currentBalance').textContent = sale.CurrentBalance?.toFixed(2) || total.toFixed(2);
+        }
+
+        // Convert number to Arabic words
+        function numberToArabicWords(number) {
+            if (number === 0) return "صفر";
+
+            const units = ["", "واحد", "اثنان", "ثلاثة", "أربعة", "خمسة", "ستة", "سبعة", "ثمانية", "تسعة"];
+            const teens = ["عشرة", "أحد عشر", "اثنا عشر", "ثلاثة عشر", "أربعة عشر", "خمسة عشر", "ستة عشر", "سبعة عشر", "ثمانية عشر", "تسعة عشر"];
+            const tens = ["", "عشرة", "عشرون", "ثلاثون", "أربعون", "خمسون", "ستون", "سبعون", "ثمانون", "تسعون"];
+            const hundreds = ["", "مائة", "مئتان", "ثلاثمائة", "أربعمائة", "خمسمائة", "ستمائة", "سبعمائة", "ثمانمائة", "تسعمائة"];
+
+            let result = "";
+            const intPart = Math.floor(number);
+
+            if (intPart >= 1000) {
+                const thousands = Math.floor(intPart / 1000);
+                const remainder = intPart % 1000;
+
+                if (thousands === 1) result += "ألف";
+                else if (thousands === 2) result += "ألفان";
+                else result += formatNumberBelow1000(thousands) + " آلاف";
+
+                if (remainder > 0) result += " و " + formatNumberBelow1000(remainder);
+            } else {
+                result = formatNumberBelow1000(intPart);
+            }
+
+            return result + " ريال فقط";
+        }
+
+        function formatNumberBelow1000(number) {
+            if (number === 0) return "";
+
+            const units = ["", "واحد", "اثنان", "ثلاثة", "أربعة", "خمسة", "ستة", "سبعة", "ثمانية", "تسعة"];
+            const teens = ["عشرة", "أحد عشر", "اثنا عشر", "ثلاثة عشر", "أربعة عشر", "خمسة عشر", "ستة عشر", "سبعة عشر", "ثمانية عشر", "تسعة عشر"];
+            const tens = ["", "عشرة", "عشرون", "ثلاثون", "أربعون", "خمسون", "ستون", "سبعون", "ثمانون", "تسعون"];
+            const hundreds = ["", "مائة", "مئتان", "ثلاثمائة", "أربعمائة", "خمسمائة", "ستمائة", "سبعمائة", "ثمانمائة", "تسعمائة"];
+
+            let result = "";
+
+            if (number >= 100) {
+                const hundred = Math.floor(number / 100);
+                const remainder = number % 100;
+                result += hundreds[hundred];
+                if (remainder > 0) result += " و " + formatNumberBelow100(remainder);
+            } else {
+                result += formatNumberBelow100(number);
+            }
+
+            return result;
+        }
+
+        function formatNumberBelow100(number) {
+            if (number < 10) return units[number];
+            if (number < 20) return teens[number - 10];
+
+            const unit = number % 10;
+            const ten = Math.floor(number / 10);
+
+            if (unit === 0) return tens[ten];
+            return units[unit] + " و " + tens[ten];
+        }
+    </script>
+</body>
+</html>
