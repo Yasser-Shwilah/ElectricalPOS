@@ -2,20 +2,12 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-<<<<<<< HEAD
     <meta name="viewport" content="width=272, initial-scale=1.0">
     <title>فاتورة - حاج حساني</title>
     <style>
         /* 72mm printable @ 96dpi ≈ 272px; 80mm roll paper */
         @page {
             size: 80mm 1200mm;
-=======
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فاتورة - حاج حساني</title>
-    <style>
-        @page {
-            size: 80mm auto;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             margin: 0;
         }
 
@@ -25,7 +17,6 @@
             box-sizing: border-box;
         }
 
-<<<<<<< HEAD
         html {
             width: 72mm;
             max-width: 72mm;
@@ -42,16 +33,11 @@
             height: auto !important;
             min-height: 0 !important;
             overflow: visible !important;
-=======
-        html, body {
-            width: 80mm;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             font-family: 'Segoe UI', 'Tahoma', sans-serif;
             font-size: 10px;
             line-height: 1.3;
             color: #000;
             background: #fff;
-<<<<<<< HEAD
             margin: 0 auto;
             padding: 0;
         }
@@ -65,14 +51,6 @@
             padding: 1mm 2mm;
             background: #fff;
             display: block;
-=======
-        }
-
-        .invoice-container {
-            width: 80mm;
-            padding: 2mm;
-            background: #fff;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         /* Header Section */
@@ -92,29 +70,20 @@
 
         .store-name-sub {
             font-size: 11px;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             color: #000;
             margin-bottom: 2mm;
         }
 
         .store-address {
             font-size: 9px;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             margin-bottom: 1mm;
         }
 
         .store-phone {
             font-size: 9px;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         /* Invoice Info Section */
@@ -131,18 +100,12 @@
 
         .invoice-details {
             font-size: 9px;
-<<<<<<< HEAD
             display: block;
         }
 
         .invoice-details p {
             display: block;
             width: 100%;
-=======
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .invoice-details p {
@@ -153,7 +116,6 @@
             font-weight: bold;
         }
 
-<<<<<<< HEAD
         /* قيم الأرقام والتفاصيل — نفس سماكة الإجمالي */
         .value-bold,
         #invoiceNumber,
@@ -163,8 +125,6 @@
             font-weight: bold;
         }
 
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         /* Customer Info */
         .customer-info {
             margin-bottom: 2mm;
@@ -178,7 +138,6 @@
         /* Items Table */
         .items-table {
             width: 100%;
-<<<<<<< HEAD
             max-width: 100%;
             border-collapse: collapse;
             margin-bottom: 2mm;
@@ -190,11 +149,6 @@
         .items-table tr {
             page-break-inside: avoid;
             page-break-after: auto;
-=======
-            border-collapse: collapse;
-            margin-bottom: 2mm;
-            font-size: 9px;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .items-table th {
@@ -224,24 +178,18 @@
             direction: rtl;
             max-width: 30mm;
             word-wrap: break-word;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .items-table .left-align {
             text-align: left;
             direction: ltr;
             unicode-bidi: bidi-override;
-<<<<<<< HEAD
             font-weight: bold;
         }
 
         .items-table td.number {
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .items-table .right-align {
@@ -274,10 +222,7 @@
             text-align: left;
             direction: ltr;
             unicode-bidi: bidi-override;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .total-row td {
@@ -336,10 +281,7 @@
         .balance-section .value {
             direction: ltr;
             unicode-bidi: bidi-override;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         /* Footer */
@@ -356,7 +298,6 @@
             margin-bottom: 1mm;
         }
 
-<<<<<<< HEAD
         /* Print Styles - 80mm thermal roll, 72mm content, no clipping */
         @media print {
             html, body {
@@ -435,19 +376,6 @@
             .totals-table .value-cell,
             .balance-section .value {
                 font-weight: 700 !important;
-=======
-        /* Print Styles */
-        @media print {
-            html, body {
-                width: 80mm;
-                margin: 0;
-                padding: 0;
-            }
-
-            .invoice-container {
-                width: 80mm;
-                padding: 0;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             }
 
             .no-print {
@@ -455,11 +383,7 @@
             }
 
             @page {
-<<<<<<< HEAD
                 size: 80mm 1200mm;
-=======
-                size: 80mm auto;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                 margin: 0;
             }
         }
@@ -491,7 +415,6 @@
             padding: 20px;
             background: #f0f0f0;
         }
-<<<<<<< HEAD
 
         @media screen {
             body {
@@ -501,11 +424,6 @@
     </style>
 </head>
 <body class="thermal-receipt">
-=======
-    </style>
-</head>
-<body>
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
     <!-- Print Button (Hidden when printing) -->
     <button class="print-button no-print" onclick="window.print()">🖨️ طباعة</button>
 
@@ -514,11 +432,7 @@
         <div class="header">
             <div class="store-name-main">الحاج حساني</div>
             <div class="store-name-sub">لتجارة الأدوات المنزلية الكهربائية</div>
-<<<<<<< HEAD
             <div class="store-address">الشدادي - الشارع العام مقابل البلدية</div>
-=======
-            <div class="store-address">الشدادي - الشارع العام</div>
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             <div class="store-phone">خدمة الزبائن: 0996120955</div>
         </div>
 
@@ -645,19 +559,11 @@
             sale.SaleItems.forEach((item, index) => {
                 itemsHTML += `
                     <tr>
-<<<<<<< HEAD
                         <td class="left-align value-bold">${item.UnitPrice.toFixed(2)}</td>
                         <td class="left-align value-bold">${item.Quantity}</td>
                         <td class="product-name value-bold">${item.Product?.Name || 'منتج'}</td>
                         <td class="left-align value-bold">${item.TotalPrice.toFixed(2)}</td>
                         <td class="number value-bold">${index + 1}</td>
-=======
-                        <td class="left-align">${item.UnitPrice.toFixed(2)}</td>
-                        <td class="left-align">${item.Quantity}</td>
-                        <td class="product-name">${item.Product?.Name || 'منتج'}</td>
-                        <td class="left-align">${item.TotalPrice.toFixed(2)}</td>
-                        <td class="number">${index + 1}</td>
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                     </tr>
                 `;
             });

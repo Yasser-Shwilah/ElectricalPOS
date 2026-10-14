@@ -67,7 +67,6 @@ namespace ElectricalPOS.Services
         }
 
         /// <summary>
-<<<<<<< HEAD
         /// Opens the invoice HTML file in the default external browser for printing.
         /// </summary>
         public async Task PrintInvoiceAsync(Invoice invoice)
@@ -102,90 +101,6 @@ namespace ElectricalPOS.Services
                 $"{safePrefix}_{DateTime.Now:yyyyMMddHHmmss}.html");
 
             await File.WriteAllTextAsync(tempPath, html, new UTF8Encoding(true));
-=======
-        /// Prints an invoice by generating HTML and opening in browser for printing
-        /// </summary>
-        public async Task PrintInvoiceAsync(Invoice invoice)
-        {
-            var html = GenerateInvoiceHtml(invoice);
-            
-            // Create a temporary HTML file
-            var tempPath = Path.Combine(Path.GetTempPath(), $"Invoice_{invoice.InvoiceNumber}_{DateTime.Now:yyyyMMddHHmmss}.html");
-            
-            // Write HTML with UTF-8 BOM for proper Arabic encoding
-            var utf8Bom = new UTF8Encoding(true);
-            await File.WriteAllTextAsync(tempPath, html, utf8Bom);
-
-            // Open in default browser for printing
-            try
-            {
-                var psi = new ProcessStartInfo
-                {
-                    FileName = tempPath,
-                    UseShellExecute = true,
-                    Verb = "print"
-                };
-                Process.Start(psi);
-            }
-            catch
-            {
-                // Fallback: just open in browser
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = tempPath,
-                    UseShellExecute = true
-                });
-            }
-        }
-
-        /// <summary>
-        /// Prints an invoice from Sale object
-        /// </summary>
-        public async Task PrintInvoiceAsync(Sale sale)
-        {
-            var html = GenerateInvoiceHtml(sale);
-            
-            // Create a temporary HTML file
-            var tempPath = Path.Combine(Path.GetTempPath(), $"Invoice_{sale.InvoiceNumber}_{DateTime.Now:yyyyMMddHHmmss}.html");
-            
-            // Write HTML with UTF-8 BOM for proper Arabic encoding
-            var utf8Bom = new UTF8Encoding(true);
-            await File.WriteAllTextAsync(tempPath, html, utf8Bom);
-
-            // Open in default browser for printing
-            try
-            {
-                var psi = new ProcessStartInfo
-                {
-                    FileName = tempPath,
-                    UseShellExecute = true,
-                    Verb = "print"
-                };
-                Process.Start(psi);
-            }
-            catch
-            {
-                // Fallback: just open in browser
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = tempPath,
-                    UseShellExecute = true
-                });
-            }
-        }
-
-        /// <summary>
-        /// Shows invoice preview in default browser
-        /// </summary>
-        public async Task ShowInvoicePreviewAsync(Invoice invoice)
-        {
-            var html = GenerateInvoiceHtml(invoice);
-            
-            var tempPath = Path.Combine(Path.GetTempPath(), $"Invoice_{invoice.InvoiceNumber.Replace("-", "_")}_{DateTime.Now:yyyyMMddHHmmss}.html");
-            
-            var utf8Bom = new UTF8Encoding(true);
-            await File.WriteAllTextAsync(tempPath, html, utf8Bom);
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
 
             Process.Start(new ProcessStartInfo
             {
@@ -194,7 +109,6 @@ namespace ElectricalPOS.Services
             });
         }
 
-<<<<<<< HEAD
         private static string PrepareHtmlForThermalPrint(string html, bool autoPrint)
         {
             if (!html.Contains("class=\"thermal-receipt\"", StringComparison.OrdinalIgnoreCase)
@@ -234,25 +148,6 @@ namespace ElectricalPOS.Services
         {
             var html = PrepareHtmlForThermalPrint(GenerateInvoiceHtml(sale), autoPrint: false);
             await OpenInvoiceInExternalBrowserAsync(html, sale.InvoiceNumber ?? "sale");
-=======
-        /// <summary>
-        /// Shows invoice preview in default browser (for Sale object)
-        /// </summary>
-        public async Task ShowInvoicePreviewAsync(Sale sale)
-        {
-            var html = GenerateInvoiceHtml(sale);
-            
-            var tempPath = Path.Combine(Path.GetTempPath(), $"Invoice_{sale.InvoiceNumber.Replace("-", "_")}_{DateTime.Now:yyyyMMddHHmmss}.html");
-            
-            var utf8Bom = new UTF8Encoding(true);
-            await File.WriteAllTextAsync(tempPath, html, utf8Bom);
-
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = tempPath,
-                UseShellExecute = true
-            });
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         /// <summary>
@@ -285,11 +180,7 @@ namespace ElectricalPOS.Services
             foreach (var item in invoice.InvoiceItems)
             {
                 var productName = item.ProductName ?? "منتج";
-<<<<<<< HEAD
                 itemsHtml.Append($"<tr>\n                    <td class=\"left-align value-bold\">{item.UnitPrice:N2}</td>\n                    <td class=\"left-align value-bold\">{item.Quantity}</td>\n                    <td class=\"product-name value-bold\">{productName}</td>\n                    <td class=\"left-align value-bold\">{item.Subtotal:N2}</td>\n                    <td class=\"number value-bold\">{index}</td>\n                </tr>");
-=======
-                itemsHtml.Append($"<tr>\n                    <td class=\"left-align\">{item.UnitPrice:N2}</td>\n                    <td class=\"left-align\">{item.Quantity}</td>\n                    <td class=\"product-name\">{productName}</td>\n                    <td class=\"left-align\">{item.Subtotal:N2}</td>\n                    <td>{index}</td>\n                </tr>");
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                 index++;
             }
 
@@ -345,19 +236,11 @@ namespace ElectricalPOS.Services
                 var productName = item.Product?.Name ?? "منتج";
                 itemsHtml.Append($@"
                 <tr>
-<<<<<<< HEAD
                     <td class=""left-align value-bold"">{item.UnitPrice:N2}</td>
                     <td class=""left-align value-bold"">{item.Quantity}</td>
                     <td class=""product-name value-bold"">{productName}</td>
                     <td class=""left-align value-bold"">{item.TotalPrice:N2}</td>
                     <td class=""number value-bold"">{index}</td>
-=======
-                    <td class=""left-align"">{item.UnitPrice:N2}</td>
-                    <td class=""left-align"">{item.Quantity}</td>
-                    <td class=""product-name"">{productName}</td>
-                    <td class=""left-align"">{item.TotalPrice:N2}</td>
-                    <td class=""number"">{index}</td>
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                 </tr>");
                 subtotal += item.TotalPrice;
                 index++;
@@ -468,30 +351,19 @@ namespace ElectricalPOS.Services
 
         private static string GetEmbeddedTemplate()
         {
-<<<<<<< HEAD
             var templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Templates", "ArabicInvoiceTemplate.html");
             if (File.Exists(templatePath))
                 return File.ReadAllText(templatePath, Encoding.UTF8);
 
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             return @"<!DOCTYPE html>
 <html lang=""ar"" dir=""rtl"">
 <head>
     <meta charset=""UTF-8"">
-<<<<<<< HEAD
     <meta name=""viewport"" content=""width=272, initial-scale=1.0"">
     <title>فاتورة - حاج حساني</title>
     <style>
         @page {
             size: 80mm 1200mm;
-=======
-    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-    <title>فاتورة - حاج حساني</title>
-    <style>
-        @page {
-            size: 80mm auto;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             margin: 0;
         }
 
@@ -501,7 +373,6 @@ namespace ElectricalPOS.Services
             box-sizing: border-box;
         }
 
-<<<<<<< HEAD
         html {
             width: 72mm;
             max-width: 72mm;
@@ -514,16 +385,11 @@ namespace ElectricalPOS.Services
             max-width: 72mm;
             height: auto !important;
             overflow: visible !important;
-=======
-        html, body {
-            width: 80mm;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             font-family: 'Segoe UI', 'Tahoma', sans-serif;
             font-size: 10px;
             line-height: 1.3;
             color: #000;
             background: #fff;
-<<<<<<< HEAD
             margin: 0 auto;
         }
 
@@ -533,13 +399,6 @@ namespace ElectricalPOS.Services
             height: auto !important;
             overflow: visible !important;
             padding: 1mm 2mm;
-=======
-        }
-
-        .invoice-container {
-            width: 80mm;
-            padding: 2mm;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             background: #fff;
         }
 
@@ -559,29 +418,20 @@ namespace ElectricalPOS.Services
 
         .store-name-sub {
             font-size: 11px;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             color: #000;
             margin-bottom: 2mm;
         }
 
         .store-address {
             font-size: 9px;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             margin-bottom: 1mm;
         }
 
         .store-phone {
             font-size: 9px;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .invoice-info {
@@ -597,29 +447,19 @@ namespace ElectricalPOS.Services
 
         .invoice-details {
             font-size: 9px;
-<<<<<<< HEAD
             display: block;
-=======
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .invoice-details p {
             margin-bottom: 1mm;
-<<<<<<< HEAD
             display: block;
             width: 100%;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .label {
             font-weight: bold;
         }
 
-<<<<<<< HEAD
         .value-bold,
         #invoiceNumber,
         #invoiceDate,
@@ -628,8 +468,6 @@ namespace ElectricalPOS.Services
             font-weight: bold;
         }
 
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         .customer-info {
             margin-bottom: 2mm;
             font-size: 9px;
@@ -644,10 +482,7 @@ namespace ElectricalPOS.Services
             border-collapse: collapse;
             margin-bottom: 2mm;
             font-size: 9px;
-<<<<<<< HEAD
             table-layout: fixed;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .items-table th {
@@ -673,24 +508,18 @@ namespace ElectricalPOS.Services
             direction: rtl;
             max-width: 30mm;
             word-wrap: break-word;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .items-table .left-align {
             text-align: left;
             direction: ltr;
             unicode-bidi: bidi-override;
-<<<<<<< HEAD
             font-weight: bold;
         }
 
         .items-table td.number {
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .totals-section {
@@ -718,10 +547,7 @@ namespace ElectricalPOS.Services
             text-align: left;
             direction: ltr;
             unicode-bidi: bidi-override;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .total-row td {
@@ -778,10 +604,7 @@ namespace ElectricalPOS.Services
         .balance-section .value {
             direction: ltr;
             unicode-bidi: bidi-override;
-<<<<<<< HEAD
             font-weight: bold;
-=======
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
         }
 
         .footer {
@@ -799,7 +622,6 @@ namespace ElectricalPOS.Services
 
         @media print {
             html, body {
-<<<<<<< HEAD
                 width: 72mm !important;
                 max-width: 72mm !important;
                 height: auto !important;
@@ -837,16 +659,6 @@ namespace ElectricalPOS.Services
             .totals-table .value-cell,
             .balance-section .value {
                 font-weight: 700 !important;
-=======
-                width: 80mm;
-                margin: 0;
-                padding: 0;
-            }
-
-            .invoice-container {
-                width: 80mm;
-                padding: 0;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             }
 
             .no-print {
@@ -854,11 +666,7 @@ namespace ElectricalPOS.Services
             }
 
             @page {
-<<<<<<< HEAD
                 size: 80mm 1200mm;
-=======
-                size: 80mm auto;
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                 margin: 0;
             }
         }
@@ -890,22 +698,14 @@ namespace ElectricalPOS.Services
         }
     </style>
 </head>
-<<<<<<< HEAD
 <body class=""thermal-receipt"">
-=======
-<body>
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
     <button class=""print-button no-print"" onclick=""window.print()"">🖨️ طباعة</button>
 
     <div class=""invoice-container"">
         <div class=""header"">
             <div class=""store-name-main"">الحاج حساني</div>
             <div class=""store-name-sub"">لتجارة الأدوات المنزلية الكهربائية</div>
-<<<<<<< HEAD
             <div class=""store-address"">الشدادي - الشارع العام مقابل البلدية</div>
-=======
-            <div class=""store-address"">الشدادي - الشارع العام</div>
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
             <div class=""store-phone"">خدمة الزبائن: 0996120955</div>
         </div>
 
@@ -994,11 +794,7 @@ namespace ElectricalPOS.Services
                     <tr>
                         <td class=""left-align"">${item.UnitPrice.toFixed(2)}</td>
                         <td class=""left-align"">${item.Quantity}</td>
-<<<<<<< HEAD
                         <td class=""product-name value-bold"">${item.Product?.Name || 'منتج'}</td>
-=======
-                        <td class=""product-name"">${item.Product?.Name || 'منتج'}</td>
->>>>>>> 45a01fe8df36f882b267fd93476aba2fae06053e
                         <td class=""left-align"">${item.TotalPrice.toFixed(2)}</td>
                         <td class=""number"">${index + 1}</td>
                     </tr>
